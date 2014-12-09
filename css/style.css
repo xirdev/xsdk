@@ -1,0 +1,54 @@
+body {
+  font-family: arial, verdana;
+}
+
+h1 {
+  font-size: 16px;
+  margin: 0 0 10px 0;
+}
+
+section {
+  display: inline-block;
+  vertical-align: text-top;
+}
+
+.box {
+  border: solid 1px #4293C9;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.form {
+  width: 300px;
+  padding: 10px;
+}
+
+.message {
+  width: 500px;
+  padding: 10px;
+}
+
+.peer {
+  position: relative;
+  margin: 0 0 7px 0;
+  font-size: 12px;
+}
+
+.peer button {
+  position: absolute;
+  right: 10px;
+}
+
+.video-container {
+  display: inline-block;
+  width: 220px;
+  height: 170px;
+}
+
+video {
+  width: 200px;
+  height: 150px;
+  margin: 10px;
+}
