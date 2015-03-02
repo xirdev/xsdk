@@ -27,13 +27,13 @@
 
         // Connect, passing the needed values.
         s.connect( {
-          username : name, // username
+          username : name,
           domain : '<your_domain>',
           application : 'default',
           room : 'default',
           // ident and secret should be passed on the
           // server-side, for security purposes.
-          ident : '<your_ident>',
+          ident : '<your_username>',
           secret : '<your_secret>',
         } );
       }
@@ -48,7 +48,7 @@
         btn.setAttribute('name', 'peer');
         btn.setAttribute('value', $peer_name);
         node.appendChild(btn);
-        node.appendChild(document.createTextNode($peer_name));
+        node.appendChild(document.createTextNode(stripLeaf($peer_name)));
         peers.appendChild(node);
         node.id = "peer" + $peer_name;
         node.className = "peer";
@@ -56,7 +56,7 @@
 
       // Peer removal helper function (UI only).
       var removePeer = function($peer_name) {
-        var node = document.getElementById("peer_" + $peer_name);
+        var node = document.getElementById("peer" + $peer_name);
         peers.removeChild(node);
       }
 
@@ -75,6 +75,10 @@
         messages.appendChild(d);
       };
 
+      var stripLeaf = function(p) {
+         return p.substr(p.lastIndexOf("/")+1)
+      }
+
       // When a peer connects to signalling, we
       // get notified here.
       $xirsys.events.getInstance().addListener($xirsys.signal.peerConnected, function($msg) {
@@ -83,8 +87,8 @@
       
       // When a peer leaves (disconnects) from
       // the signalling, we get notified here.
-      $xirsys.events.getInstance().addListener($xirsys.signal.peerRemoved, function($msg) {
-        removePeer($msg.data);
+      $xirsys.events.getInstance().addListener($xirsys.signal.peerRemoved, function($peer) {
+        removePeer($peer);
       });
       
       // We get this when we login. There may be zero
@@ -96,7 +100,7 @@
 
       $xirsys.events.getInstance().addListener($xirsys.signal.message, function($msg) {
         if ($msg.sender != name)
-          addMessage($msg.sender + ": " + $msg.data);
+          addMessage(stripLeaf($msg.sender) + ": " + $msg.data);
       });
 
       $xirsys.events.getInstance().addListener($xirsys.signal.error, function($msg) {

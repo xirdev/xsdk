@@ -16,26 +16,30 @@
           peers = document.getElementById("peers"),
           login = document.getElementById("login"),
           username = document.getElementById("username");
+          stream = document.getElementById("stream");
 
       // When the connect button is clicked...
       login.onclick = function() {
         // Make the username valid.
         var name = username.value.replace(/\W+/g, "");
         if (!name || name == "") return;
-
+        
         // Create out XirSys instance.
         var p = new $xirsys.p2p({audio: true, video: true}, lv, rv);
+        var config = { /* config object */
+          user: name, // username
+          // ident and secret should be passed on the
+          // server-side, for security purposes.
+          ident : '<your_username>',
+          secret : '<your_secret>',
+        }
+        config.type = (stream.value == "direct") ? null : stream.value;
+        console.log(config);
         var s = p.open(
           '<your_domain>', // domain
           'default', // application
           'default', // room
-          { /* config object */
-            user: name, // username
-            // ident and secret should be passed on the
-            // server-side, for security purposes.
-            ident : '<your_username>',
-            secret : '<your_secret>',
-          }
+          config
         );
 
         // Peer connected helper function (UI only).
@@ -99,6 +103,11 @@
   <section>
     <div class="form box">
       <input type="text" id="username" placeholder="enter a username" />
+      <select id="stream">
+        <option>direct</option>
+        <option>publish</option>
+        <option>subscribe</option>
+      </select>
       <button id="login">connect</button>
     </div>
     <div id="peers" class="form box">
