@@ -45,7 +45,7 @@
           var node = document.createElement("div"),
               btn = document.createElement("button");
           btn.appendChild(document.createTextNode("connect"));
-          node.appendChild(document.createTextNode($peer_name));
+          node.appendChild(document.createTextNode(stripLeaf($peer_name)));
           node.appendChild(btn);
           peers.appendChild(node);
           node.id = "peer_" + $peer_name;
@@ -59,7 +59,11 @@
         var removePeer = function($peer_name) {
           var node = document.getElementById("peer_" + $peer_name);
           peers.removeChild(node);
-        }
+        };
+
+        var stripLeaf = function(p) {
+          return p.substr(p.lastIndexOf("/")+1)
+        };
 
         // When a peer connects to signalling, we
         // get notified here.
