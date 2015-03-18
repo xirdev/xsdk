@@ -33,7 +33,7 @@
           room : 'default',
           // ident and secret should be passed on the
           // server-side, for security purposes.
-          ident : '<your_username>',
+          ident : '<your_ident>',
           secret : '<your_secret>',
         } );
       }
@@ -58,7 +58,7 @@
       var removePeer = function($peer_name) {
         var node = document.getElementById("peer" + $peer_name);
         peers.removeChild(node);
-      }
+      };
 
       // Peer value helper function (UI only).
       var selectedPeer = function() {
@@ -67,7 +67,7 @@
         for (var i=0, l=peer.length; i<l; i++)
           if (peer[i].checked)
             return (peer[i].value == "__all__") ? undefined : peer[i].value;
-      }
+      };
 
       var addMessage = function($msg) {
         var d = document.createElement("div");
@@ -77,7 +77,7 @@
 
       var stripLeaf = function(p) {
          return p.substr(p.lastIndexOf("/")+1)
-      }
+      };
 
       // When a peer connects to signalling, we
       // get notified here.
