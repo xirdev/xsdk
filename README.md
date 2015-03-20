@@ -12,6 +12,8 @@ Changes
 
         --allow-http-screen-capture  // enable non-SSL domain support (for localhost testing)
 
+Updated docs to conform to new signalling packet type.
+
 SimpleWebRTC
 ----
 
