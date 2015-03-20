@@ -6,7 +6,9 @@ This repository contains simple examples for the new XirSys beta platform.  Each
 Changes
 ----
 
-20/03/2015 - Added screenshare example
+20/03/2015 - Added screenshare example. To use, invoke Chrome with flags:
+        --enable-usermedia-screen-capturing  // enable screen capture
+        --allow-http-screen-capture  // enable non-SSL domain support (for localhost testing)
 
 SimpleWebRTC
 ----
