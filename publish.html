@@ -25,15 +25,15 @@
         if (!name || name == "") return;
         
         // Create out XirSys instance.
-        var p = new $xirsys.p2p({audio: true, video: true}, lv, rv);
+        var connType = (stream.value == "direct") ? null : stream.value;
+        var p = new $xirsys.p2p({audio: true, video: true, connType: $xirsys.p2p[connType]}, lv, rv);
         var config = { /* config object */
           user: name, // username
           // ident and secret should be passed on the
           // server-side, for security purposes.
-          ident : '<your_username>',
-          secret : '<your_secret>',
+          ident: "<your_ident>", // ident
+          secret: "<your_secret>" // secret key
         }
-        config.type = (stream.value == "direct") ? null : stream.value;
         console.log(config);
         var s = p.open(
           '<your_domain>', // domain
@@ -102,10 +102,10 @@
 <body>
   <section>
     <div class="form box">
-      <input type="text" id="username" placeholder="enter a username" />
+      <input type="text" id="username" placeholder="enter a username" value="Lee" />
       <select id="stream">
         <option>direct</option>
-        <option>publish</option>
+        <option selected="selected">publish</option>
         <option>subscribe</option>
       </select>
       <button id="login">connect</button>
