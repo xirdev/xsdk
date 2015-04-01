@@ -4,20 +4,22 @@ xsdk
 This repository contains simple examples for the new XirSys beta platform.  Each of the examples are created to make it easier to use and understand the XirSys API. Eventually, this repo will house the public SDK for XirSys.
 
 Changes
-----
+-------
 
-20/03/2015 - Added screenshare example. To use, invoke Chrome with flags:
+##### 20/03/2015
+Added screenshare example. To use, invoke Chrome with flags:
 
-        --enable-usermedia-screen-capturing  // enable screen capture
+    --enable-usermedia-screen-capturing  // enable screen capture
 
-        --allow-http-screen-capture  // enable non-SSL domain support (for localhost testing)
-
-31/03/2015 - Implement handshake for pub/sub (one-to-many).  Pub/sub is still in development and cannot be used. However, the publish example shows how pub/sub handshakes can be implemented, now.  See docs for further info.
+    --allow-http-screen-capture  // enable non-SSL domain support (for localhost testing)
 
 Updated docs to conform to new signalling packet type.
 
+##### 31/03/2015
+Implement handshake for pub/sub (one-to-many).  Pub/sub is still in development and cannot be used. However, the publish example shows how pub/sub handshakes can be implemented, now.  See docs for further info.
+
 SimpleWebRTC
-----
+------------
 
 (Currently broken for beta - will fix shortly)
 
