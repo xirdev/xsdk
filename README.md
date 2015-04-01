@@ -12,7 +12,7 @@ Changes
 
         --allow-http-screen-capture  // enable non-SSL domain support (for localhost testing)
 
-31/03/2015 - Implement handshake for pub/sub (one-to-many).  Pub/sub is still in development and cannot be used. However, the publish example shows how pub/sub handshakes can be implemented, now.
+31/03/2015 - Implement handshake for pub/sub (one-to-many).  Pub/sub is still in development and cannot be used. However, the publish example shows how pub/sub handshakes can be implemented, now.  See docs for further info.
 
 Updated docs to conform to new signalling packet type.
 
