@@ -19,8 +19,7 @@
           name = "";
 
       // Create a signal object.
-      var s = new $xirsys.signal((xirsysConnect.secure === true) ?
-      	xirsysConnect.server : null);
+      var s = new $xirsys.signal((xirsysConnect.secure === true) ? xirsysConnect.server : null);
 
       // When the connect button is clicked...
       login.onclick = function() {
@@ -28,18 +27,9 @@
         name = username.value.replace(/\W+/g, "");
         if (!name || name == "") return;
 
-        // Connect, passing the needed values.
-       var connectionProperties = {
-          username : name,
-          domain : xirsysConnect.domain,
-          application : xirsysConnect.application,
-          room : xirsysConnect.room
-        }
-        if (xirsysConnect.secure !== true) {
-          connectionProperties.ident = xirsysConnect.ident;
-          connectionProperties.secret = xirsysConnect.secret;
-        } 
-        s.connect(connectionProperties);
+       var connectionProperties = xirsysConnect.data;
+       connectionProperties.username = name;
+       s.connect(connectionProperties);
       }
 
       // Peer connected helper function (UI only).
