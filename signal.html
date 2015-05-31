@@ -2,9 +2,11 @@
 <head>
   <title>Signal Test</title>
   <link rel="stylesheet" type="text/css" href="css/style.css"></link>
+  <script type="text/javascript" src="xirsys_connect.js"></script>
   <script type="text/javascript" src="lib/xirsys.core.js"></script>
   <script type="text/javascript" src="lib/xirsys.signal.js"></script>
   <script type="text/javascript">
+    'use strict';
 
     window.onload = function () {
       // Getting references to page DOM.
@@ -17,7 +19,8 @@
           name = "";
 
       // Create a signal object.
-      var s = new $xirsys.signal();
+      var s = new $xirsys.signal((xirsysConnect.secure === true) ?
+      	xirsysConnect.server : null);
 
       // When the connect button is clicked...
       login.onclick = function() {
@@ -26,16 +29,17 @@
         if (!name || name == "") return;
 
         // Connect, passing the needed values.
-        s.connect( {
+       var connectionProperties = {
           username : name,
-          domain : '<your_domain>',
-          application : 'default',
-          room : 'default',
-          // ident and secret should be passed on the
-          // server-side, for security purposes.
-          ident : '<your_ident>',
-          secret : '<your_secret>',
-        } );
+          domain : xirsysConnect.domain,
+          application : xirsysConnect.application,
+          room : xirsysConnect.room
+        }
+        if (xirsysConnect.secure !== true) {
+          connectionProperties.ident = xirsysConnect.ident;
+          connectionProperties.secret = xirsysConnect.secret;
+        } 
+        s.connect(connectionProperties);
       }
 
       // Peer connected helper function (UI only).
@@ -112,10 +116,13 @@
       btn.onclick = function() {
         var peer = selectedPeer();
         addMessage(name + ": " + message.value);
-        if (!!peer)
+        if (!!peer) {
+          console.log(peer);
           s.send("message", message.value, peer);
-        else
+        } else {
+          console.log('no peer');
           s.send("message", message.value);
+        }
       }
     }
 
