@@ -24,7 +24,7 @@
         if (!name || name == "") return;
 
         // Create out XirSys instance.
-        var p = new $xirsys.p2p({audio: true, video: true, screenshare: true}, lv, rv);
+        var p = new $xirsys.p2p(null, {audio: true, video: true, screenshare: true}, lv, rv);
         var s = p.open(
           'www.xirsys.com', // domain
           'default', // application

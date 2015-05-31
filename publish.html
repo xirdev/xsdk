@@ -26,7 +26,7 @@
         
         // Create out XirSys instance.
         var connType = (stream.value == "direct") ? null : stream.value;
-        var p = new $xirsys.p2p({audio: true, video: true, connType: $xirsys.p2p[connType]}, lv, rv);
+        var p = new $xirsys.p2p(null, {audio: true, video: true, connType: $xirsys.p2p[connType]}, lv, rv);
         var config = { /* config object */
           user: name, // username
           // ident and secret should be passed on the
