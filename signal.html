@@ -10,7 +10,7 @@
 
 		window.onload = function () {
 			// Getting references to page DOM.
-			var btn = document.getElementById("send"),
+			var sendMessage = document.getElementById("sendMessage"),
 				peers = document.getElementById("peers"),
 				message = document.getElementById("message"),
 				messages = document.getElementById("messages"),
@@ -22,7 +22,8 @@
 			var s = new $xirsys.signal((xirsysConnect.secure === true) ? xirsysConnect.server : null);
 
 			// When the connect button is clicked...
-			login.onclick = function () {
+			login.onsubmit = function ($event) {
+				$event.preventDefault();
 				// Make the username valid.
 				name = username.value.replace(/\W+/g, "");
 				if (!name || name == "") {
@@ -110,7 +111,8 @@
 
 			// Here, we do something when the send button
 			// is clicked.
-			btn.onclick = function () {
+			sendMessage.onsubmit = function ($event) {
+				$event.preventDefault();
 				var peer = selectedPeer();
 				addMessage(name + ": " + message.value);
 				if (!!peer) {
@@ -128,24 +130,23 @@
 </head><body>
 
 	<section>
-		<div class="form box">
+		<form id="login" class="box">
 			<input type="text" id="username" placeholder="enter a username" />
-			<button id="login">connect</button>
-		</div>
-		<div id="peers" class="form box">
+			<button type="submit">connect</button>
+		</form>
+		<form id="peers" class="box">
 			<h1>Peers</h1>
 			<div class="peer">
 				<input type="radio" name="peer" value="__all__" checked="checked"/>
 				&lt;All peers&gt;
 			</div> 
-		</div>
+		</form>
 	</section>
 	<section>
-		<div class="message box">
-			<div id="messages"></div>
-			<hr />
-			message: <input type="text" id="message" />
-			<button id="send">Send</button>
+		<div id="messages" class="box"></div>
+		<form id="sendMessage" class="message box">
+			New message: <input type="text" id="message" />
+			<button type="submit">Send</button>
 		</div>
 	</section>
 
