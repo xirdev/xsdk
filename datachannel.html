@@ -2,6 +2,7 @@
 <head>
   <title>Data Channel Test</title>
   <link rel="stylesheet" type="text/css" href="css/style.css"></link>
+  <script type="text/javascript" src="xirsys_connect.js"></script>
   <script type="text/javascript" src="lib/xirsys.core.js"></script>
   <script type="text/javascript" src="lib/xirsys.signal.js"></script>
   <script type="text/javascript" src="lib/xirsys.api.js"></script>
@@ -27,20 +28,13 @@
         var name = username.value.replace(/\W+/g, "");
         if (!name || name == "") return;
 
-        // Create out XirSys instance.
-        var p = new $xirsys.p2p(null, {audio: false, video: false, dataChannels: ["messageChannel"]});
-        var s = p.open(
-          '<your_domain>', // domain
-          'default', // application
-          'default', // room
-          { /* config object */
-            user: name, // username
-            // ident and secret should be passed on the
-            // server-side, for security purposes.
-            ident: "<your_ident>", // ident
-            secret: "<your_secret>" // secret key
-          }
-        );
+        var p = new $xirsys.p2p(
+        	(xirsysConnect.secure === true) ? xirsysConnect.server : null, 
+      		{audio: false, video: false, dataChannels: ["messageChannel"]}
+      	);
+       var connectionProperties = xirsysConnect.data;
+       connectionProperties.username = name;
+        var s = p.open(connectionProperties);
 
         // Peer connected helper function (UI only).
         var addPeer = function($peer_name) {
@@ -62,7 +56,7 @@
         // Peer removal helper function (UI only).
         var removePeer = function($peer_name) {
           var node = document.getElementById("peer_" + $peer_name);
-          peers.removeChild(node);
+          peers.removeChild(node); //Showing an error
         };
 
         var addMessage = function($msg) {

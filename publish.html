@@ -2,6 +2,7 @@
 <head>
   <title>WebRTC Test</title>
   <link rel="stylesheet" type="text/css" href="css/style.css"></link>
+  <script type="text/javascript" src="xirsys_connect.js"></script>
   <script type="text/javascript" src="lib/xirsys.core.js"></script>
   <script type="text/javascript" src="lib/xirsys.signal.js"></script>
   <script type="text/javascript" src="lib/xirsys.api.js"></script>
@@ -11,11 +12,9 @@
 
     window.onload = function () {
       // Getting references to page DOM.
-      var lv = document.getElementById("localVideo"),
-          rv = document.getElementById("remoteVideo"),
-          peers = document.getElementById("peers"),
+      var peers = document.getElementById("peers"),
           login = document.getElementById("login"),
-          username = document.getElementById("username");
+          username = document.getElementById("username"),
           stream = document.getElementById("stream");
 
       // When the connect button is clicked...
@@ -24,23 +23,18 @@
         var name = username.value.replace(/\W+/g, "");
         if (!name || name == "") return;
         
-        // Create out XirSys instance.
         var connType = (stream.value == "direct") ? null : stream.value;
-        var p = new $xirsys.p2p(null, {audio: true, video: true, connType: $xirsys.p2p[connType]}, lv, rv);
-        var config = { /* config object */
-          user: name, // username
-          // ident and secret should be passed on the
-          // server-side, for security purposes.
-          ident: "<your_ident>", // ident
-          secret: "<your_secret>" // secret key
-        }
-        console.log(config);
-        var s = p.open(
-          '<your_domain>', // domain
-          'default', // application
-          'default', // room
-          config
-        );
+        
+        var p = new $xirsys.p2p(
+        	(xirsysConnect.secure === true) ? xirsysConnect.server : null, 
+      		{audio: true, video: true, connType: $xirsys.p2p[connType]}, 
+      		document.getElementById("localVideo"), 
+      		document.getElementById("remoteVideo")
+      	);
+      	
+        var connectionProperties = xirsysConnect.data;
+        connectionProperties.username = name;
+        var s = p.open(connectionProperties);
 
         // Peer connected helper function (UI only).
         var addPeer = function($peer_name) {
@@ -62,7 +56,7 @@
         // Peer removal helper function (UI only).
         var removePeer = function($peer_name) {
           var node = document.getElementById("peer_" + $peer_name);
-          peers.removeChild(node);
+          peers.removeChild(node); // Showing error
         }
 
         // When a peer connects to signalling, we

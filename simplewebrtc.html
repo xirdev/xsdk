@@ -37,37 +37,32 @@
         </div>
         <div id="remotes"></div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+		<script type="text/javascript" src="xirsys_connect.js"></script>
         <script type="text/javascript" src="lib/xirsys.core.js"></script>
         <script type="text/javascript" src="lib/xirsys.api.js"></script>
         <script type="text/javascript" src="lib/xirsys.simplewebrtc.js"></script>
         <script src="thirdparty/simplewebrtc.js"></script>
         <script>
-            // grab the room from the URL
-            var room = location.search && location.search.split('?')[1];
+            
             // create our webrtc connection
-            var webrtc = new $xirsys.simplewebrtc(
-              {
-                username : "",
-                domain : '<your_domain>',
-                application : 'default',
-                // ident and secret should be passed on the
-                // server-side, for security purposes.
-                ident : '<your_username>',
-                secret : '<your_secret>',
-              },
-              {
-                // the id/element dom element that will hold "our" video
-                localVideoEl: 'localVideo',
-                // the id/element dom element that will hold remote videos
-                remoteVideosEl: 'remotesVideos',
-                // immediately ask for camera access
-                autoRequestMedia: true
-              }
-            );
+            var webrtc = new $xirsys.simplewebrtc((xirsysConnect.secure === true) ? xirsysConnect.server : null);
+            var connectionProperties = xirsysConnect.data;
+			webrtc.connect(
+				connectionProperties,
+			    {
+			      localVideoEl: 'localVideo', // the id/dom element to hold "our" video
+			      remoteVideosEl: 'remotesVideos', // the id/dom element to hold remote videos // Should this be 'remotes' instead?
+			      autoRequestMedia: true // immediately ask for camera access
+				}
+			);
+			
             // when it's ready, join if we got a room from the URL
+            var room = location.search && location.search.split('?')[1];
             webrtc.on('readyToCall', function () {
                 // you can name it anything
-                if (room) webrtc.joinRoom(room);
+                if (!!room) {
+                	webrtc.joinRoom(room);
+                }
             });
             function showVolume(el, volume) {
                 if (!el) return;
@@ -161,7 +156,6 @@
                             setButton(false);
                         }
                     });
-                    
                 }
             });
         </script>

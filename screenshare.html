@@ -2,6 +2,7 @@
 <head>
   <title>WebRTC Test</title>
   <link rel="stylesheet" type="text/css" href="css/style.css"></link>
+  <script type="text/javascript" src="xirsys_connect.js"></script>
   <script type="text/javascript" src="lib/xirsys.core.js"></script>
   <script type="text/javascript" src="lib/xirsys.signal.js"></script>
   <script type="text/javascript" src="lib/xirsys.api.js"></script>
@@ -11,9 +12,7 @@
 
     window.onload = function () {
       // Getting references to page DOM.
-      var lv = document.getElementById("localVideo"),
-          rv = document.getElementById("remoteVideo"),
-          peers = document.getElementById("peers"),
+      var peers = document.getElementById("peers"),
           login = document.getElementById("login"),
           username = document.getElementById("username");
 
@@ -22,21 +21,17 @@
         // Make the username valid.
         var name = username.value.replace(/\W+/g, "");
         if (!name || name == "") return;
-
-        // Create out XirSys instance.
-        var p = new $xirsys.p2p(null, {audio: true, video: true, screenshare: true}, lv, rv);
-        var s = p.open(
-          'www.xirsys.com', // domain
-          'default', // application
-          'default', // room
-          { /* config object */
-            user: name, // username
-            // ident and secret should be passed on the
-            // server-side, for security purposes.
-            ident: "***REMOVED***", // ident
-            secret: "***REMOVED***" // secret key
-          }
-        );
+        
+        var p = new $xirsys.p2p(
+        	(xirsysConnect.secure === true) ? xirsysConnect.server : null, 
+      		{audio: true, video: true, screenshare: true}, 
+      		document.getElementById("localVideo"), 
+      		document.getElementById("remoteVideo")
+      	);
+      	
+        var connectionProperties = xirsysConnect.data;
+        connectionProperties.username = name;
+        var s = p.open(connectionProperties);
 
         // Peer connected helper function (UI only).
         var addPeer = function($peer_name) {
