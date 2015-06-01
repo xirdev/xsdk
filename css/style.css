@@ -1,54 +1,45 @@
 body {
-  font-family: arial, verdana;
+	font-family: arial, verdana;
+	font-size: 14px;
 }
 
 h1 {
-  font-size: 16px;
-  margin: 0 0 10px 0;
+	margin: 0 0 10px 0;
 }
 
 section {
-  display: inline-block;
-  vertical-align: text-top;
+	display: inline-block;
+	vertical-align: text-top;
 }
 
 .box {
-  border: solid 1px #4293C9;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  margin: 10px;
-}
-
-.form {
-  width: 300px;
-  padding: 10px;
-}
-
-.message {
-  width: 500px;
-  padding: 10px;
+	border: solid 1px #4293C9;
+	border-radius: 4px;
+	margin: 10px;
+	width: 400px;
+	padding: 10px;
+	background: #f8f8ff;
+	box-shadow: inset 1px 2px 3px #c8c8cf;
 }
 
 .peer {
-  position: relative;
-  margin: 0 0 7px 0;
-  font-size: 12px;
+	position: relative;
+	margin: 0 0 7px 0;
 }
 
 .peer button {
-  position: absolute;
-  right: 10px;
+	position: absolute;
+	right: 10px;
 }
 
 .video-container {
-  display: inline-block;
-  width: 220px;
-  height: 170px;
+	display: inline-block;
+	width: 220px;
+	height: 170px;
 }
 
 video {
-  width: 200px;
-  height: 150px;
-  margin: 10px;
+	width: 200px;
+	height: 150px;
+	margin: 10px;
 }
