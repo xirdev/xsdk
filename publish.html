@@ -18,10 +18,12 @@
 				username = document.getElementById("username"),
 				stream = document.getElementById("stream");
 
+
 			// When the connect button is clicked...
-			login.onclick = function () {
+			login.onsubmit = function ($event) {
+				$event.preventDefault();
 				// Make the username valid.
-				var name = username.value.replace(/\W+/g, "");
+				name = username.value.replace(/\W+/g, "");
 				if (!name || name == "") {
 					return;
 				}
@@ -101,16 +103,16 @@
 </head><body>
 
 	<section>
-		<div class="form box">
-			<input type="text" id="username" placeholder="enter a username" value="Lee" />
+		<form id="login" class="box">
+			Username: <input type="text" id="username" placeholder="enter a username" />
 			<select id="stream">
 				<option>direct</option>
 				<option selected="selected">publish</option>
 				<option>subscribe</option>
 			</select>
-			<button id="login">connect</button>
-		</div>
-		<div id="peers" class="form box">
+			<button type="submit">connect</button>
+		</form>
+		<div id="peers" class="box">
 			<h1>Peers</h1>
 		</div>
 	</section>

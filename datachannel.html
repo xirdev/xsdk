@@ -13,7 +13,7 @@
 		window.onload = function () {
 		
 			// Getting references to page DOM.
-			var btn = document.getElementById("send"),
+			var sendMessage = document.getElementById("sendMessage"),
 				peers = document.getElementById("peers"),
 				message = document.getElementById("message"),
 				messages = document.getElementById("messages"),
@@ -24,11 +24,14 @@
 				connected = false;
 
 			// When the connect button is clicked...
-			login.onclick = function () {
+			login.onsubmit = function ($event) {
+				$event.preventDefault();
 				// Make the username valid.
-				var name = username.value.replace(/\W+/g, "");
-				if (!name || name == "") return;
-
+				name = username.value.replace(/\W+/g, "");
+				if (!name || name == "") {
+					return;
+				}
+			
 				var p = new $xirsys.p2p(
 					(xirsysConnect.secure === true) ? xirsysConnect.server : null, 
 					{audio: false, video: false, dataChannels: ["messageChannel"]}
@@ -112,7 +115,10 @@
 				});
 
 				$xirsys.events.getInstance().addListener($xirsys.p2p.dataChannelOpen, function () {
-					btn.onclick = function () {
+					// Here, we do something when the send button
+					// is clicked.
+					sendMessage.onsubmit = function ($event) {
+						$event.preventDefault();
 						addMessage(name + ": " + message.value);
 						p.dataChannelSend(message.value);
 					}
@@ -134,22 +140,21 @@
 </head><body>
 
 	<section>
-		<div class="form box">
-			<input type="text" id="username" placeholder="enter a username" />
-			<button id="login">connect</button>
-		</div>
-		<div id="peers" class="form box">
+		<form id="login" class="box">
+			Username: <input type="text" id="username" placeholder="enter a username" />
+			<button type="submit">connect</button>
+		</form>
+		<div id="peers" class="box">
 			<h1>Peers</h1>
 			<div class="peer"></div> 
 		</div>
 	</section>
 	<section>
-		<div class="message box">
-			<div id="messages"></div>
-			<hr />
-			message: <input type="text" id="message" />
-			<button id="send">Send</button>
-		</div>
+		<div id="messages" class="box"></div>
+		<form id="sendMessage" class="message box">
+			New message: <input type="text" id="message" />
+			<button type="submit">Send</button>
+		</form>
 	</section>
 
 </body></html>

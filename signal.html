@@ -131,23 +131,23 @@
 
 	<section>
 		<form id="login" class="box">
-			<input type="text" id="username" placeholder="enter a username" />
+			Username: <input type="text" id="username" placeholder="enter a username" />
 			<button type="submit">connect</button>
 		</form>
-		<form id="peers" class="box">
+		<div id="peers" class="box">
 			<h1>Peers</h1>
 			<div class="peer">
 				<input type="radio" name="peer" value="__all__" checked="checked"/>
 				&lt;All peers&gt;
 			</div> 
-		</form>
+		</div>
 	</section>
 	<section>
 		<div id="messages" class="box"></div>
 		<form id="sendMessage" class="message box">
 			New message: <input type="text" id="message" />
 			<button type="submit">Send</button>
-		</div>
+		</form>
 	</section>
 
 </body></html>
