@@ -87,7 +87,8 @@
 		if (room) {
 			setRoom(room);
 		} else {
-			$('form').submit(function () {
+			$('form').submit(function ($event) {
+				$event.preventDefault();
 				var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
 				webrtc.createRoom(val, function (err, token) {
 					console.log(' create room cb', arguments);
