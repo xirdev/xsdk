@@ -18,7 +18,6 @@
 				username = document.getElementById("username"),
 				stream = document.getElementById("stream");
 
-
 			// When the connect button is clicked...
 			login.onsubmit = function ($event) {
 				$event.preventDefault();
@@ -63,7 +62,7 @@
 				// Peer removal helper function (UI only).
 				var removePeer = function ($peer_name) {
 					var node = document.getElementById("peer_" + $peer_name);
-					peers.removeChild(node); // Showing error
+					peers.removeChild(node); 
 				}
 
 				// When a peer connects to signalling, we
@@ -81,8 +80,9 @@
 				// We get this when we login. There may be zero
 				// to many peers at this time.
 				$xirsys.events.getInstance().addListener($xirsys.signal.peers, function ($msg) {
-					for (var i = 0; i < $msg.users.length; i++)
+					for (var i = 0; i < $msg.users.length; i++) {
 						addPeer($msg.users[i]);
+					}
 				});
 
 				// Here, we listen for an offer, so that

@@ -17,14 +17,19 @@
 				login = document.getElementById("login"),
 				username = document.getElementById("username");
 
+
 			// When the connect button is clicked...
-			login.onclick = function () {
+			login.onsubmit = function ($event) {
+				$event.preventDefault();
 				// Make the username valid.
-				var name = username.value.replace(/\W+/g, "");
+				name = username.value.replace(/\W+/g, "");
 				if (!name || name == "") {
 					return;
 				}
-				
+
+
+
+
 				var p = new $xirsys.p2p(
 					(xirsysConnect.secure === true) ? xirsysConnect.server : null, 
 					{audio: true, video: true, screenshare: true}, 
@@ -60,6 +65,8 @@
 					peers.removeChild(node);
 				};
 
+				
+				
 				var stripLeaf = function (p) {
 					return p.substr(p.lastIndexOf("/")+1)
 				};
@@ -75,6 +82,8 @@
 				$xirsys.events.getInstance().addListener($xirsys.signal.peerRemoved, function ($msg) {
 					removePeer($msg);
 				});
+			
+			
 				
 				// We get this when we login. There may be zero
 				// to many peers at this time.
@@ -102,11 +111,11 @@
 </head><body>
 
 	<section>
-		<div class="form box">
-			<input type="text" id="username" placeholder="enter a username" />
-			<button id="login">connect</button>
-		</div>
-		<div id="peers" class="form box">
+		<form id="login" class="box">
+			Username: <input type="text" id="username" placeholder="enter a username" />
+			<button type="submit">connect</button>
+		</form>
+		<div id="peers" class="box">
 			<h1>Peers</h1>
 		</div>
 	</section>
