@@ -75,7 +75,7 @@
 				// When a peer leaves (disconnects) from
 				// the signalling, we get notified here.
 				$xirsys.events.getInstance().addListener($xirsys.signal.peerRemoved, function ($msg) {
-					removePeer($msg.data);
+					removePeer($msg);
 				});
 				
 				// We get this when we login. There may be zero
