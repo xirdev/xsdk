@@ -21,14 +21,12 @@
 			// When the connect button is clicked...
 			login.onsubmit = function ($event) {
 				$event.preventDefault();
+				document.getElementById('login-btn').style.visibility = 'hidden';
 				// Make the username valid.
 				name = username.value.replace(/\W+/g, "");
 				if (!name || name == "") {
 					return;
 				}
-
-
-
 
 				var p = new $xirsys.p2p(
 					(xirsysConnect.secure === true) ? xirsysConnect.server : null, 
@@ -114,7 +112,7 @@
 	<section>
 		<form id="login" class="box">
 			Username: <input type="text" id="username" placeholder="enter a username" />
-			<button type="submit">connect</button>
+			<button id="login-btn" type="submit">connect</button>
 		</form>
 		<div id="peers" class="box">
 			<h2>Peers</h2>

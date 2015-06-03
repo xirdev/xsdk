@@ -21,6 +21,7 @@
 			// When the connect button is clicked...
 			login.onsubmit = function ($event) {
 				$event.preventDefault();
+				document.getElementById('login-btn').style.visibility = 'hidden';
 				// Make the username valid.
 				name = username.value.replace(/\W+/g, "");
 				if (!name || name == "") {
@@ -111,7 +112,7 @@
 				<option selected="selected">publish</option>
 				<option>subscribe</option>
 			</select>
-			<button type="submit">connect</button>
+			<button id="login-btn" type="submit">connect</button>
 		</form>
 		<div id="peers" class="box">
 			<h2>Peers</h2>
