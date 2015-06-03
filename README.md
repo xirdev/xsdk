@@ -3,8 +3,13 @@ xsdk
 
 This repository contains simple examples for the new XirSys beta platform.  Each of the examples are created to make it easier to use and understand the XirSys API. Eventually, this repo will house the public SDK for XirSys.
 
+The SDK and demos are still in active development. At present the Signal and WebRTC demos are up to date and functional examples of the Xirsys platform, though not yet stable. The other demos will be brought up to speed soon. We will also greatly expand documentation over the coming months.
+
 Changes
 -------
+
+##### 03/06/2015
+Multitude of small improvements, focusing on setting the Signal and WebRTC demos working well.
 
 ##### 20/03/2015
 Added screenshare example. To use, invoke Chrome with flags:
