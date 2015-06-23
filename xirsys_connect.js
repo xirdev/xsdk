@@ -1,15 +1,14 @@
 // Ident and secret should ideally be passed from a server for security purposes.
 // If serverAuthentication is true then you should remove these two values.
 
-// Insecure method
 var xirsysConnect = {
 	secure : false,
 	data : {
-		domain : 'www.xirsys.com',
+		domain : 'www.your-domain.com',
 		application : 'default',
 		room : 'default',
-		ident : 'user-1',
-		secret : '12345678-1234-1234-1234-123456789012'
+		ident : 'your-ident',
+		secret : 'your-secret'
 	}
 };
 
@@ -18,7 +17,7 @@ var xirsysConnect = {
 	secure : true,
 	server : '/getToken.php',
 	info : {
-		domain : 'www.xirsys.com',
+		domain : 'www.your-domain.com',
 		application : 'default',
 		room : 'default'
 	}
