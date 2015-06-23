@@ -1,12 +1,15 @@
 xsdk
 ====
 
-This repository contains simple examples for the new XirSys beta platform.  Each of the examples are created to make it easier to use and understand the XirSys API. Eventually, this repo will house the public SDK for XirSys.
+This repository contains simple examples for the new XirSys platform.  Each of the examples are created to make it easier to use and understand the XirSys API. Eventually, this repo will house the public SDK for XirSys.
 
-The SDK and demos are still in active development. At present the Signal and WebRTC demos are up to date and functional examples of the Xirsys platform, though not yet stable. The other demos will be brought up to speed soon. We will also greatly expand documentation over the coming months.
+The SDK and demos are still in active development. At present the Signal and SimpleWebRTC demos are up to date and functional examples of the Xirsys platform. The other demos will be brought up to speed and added to this repository soon. We will also greatly expand documentation over the coming months.
 
 Changes
 -------
+
+##### 23/06/2015
+Removed non-working demos for now, leaving only signalling and SimpleWebRTC demos. Other demos will be added back to this repo shortly.
 
 ##### 03/06/2015
 Multitude of small improvements, focusing on setting the Signal and WebRTC demos working well.
@@ -26,10 +29,4 @@ Implement handshake for pub/sub (one-to-many).  Pub/sub is still in development 
 SimpleWebRTC
 ------------
 
-(Currently broken for beta - will fix shortly)
-
-We have recently added a SimpleWebRTC demo to this repo.  The demo is based on the SimpleWebRTC example supplied by &yet, but has some slight alterations to make it work with our own signalling.  Please do give this a try and let us know what improvements your would like.
-
-The SimpleWebRTC library passes a room name between peers.  XirSys requires that the room already exists, so we instead pass the user token internally.  When running the demo, make sure to enter a room you know to exist in your account.
-
-We could quite simply have updated the demo so that the room was created via the XirSys room endpoint, but we felt it was more important to keep the demo as close to &yet's as possible, so that you, the developer, could see how it worked.
+The SimpleWebRTC demo is a great example of using the XirSys platform. The signalling for the SimpleWebRTC demo is based off of the demo server supplied by &Yet for use with SimpleWebRTC. However, this signalling is neither extensive nor official. The signalling detailed in the documentation and demonstrated in the signal.html demo is the preferred protocol for WebRTC signalling.
