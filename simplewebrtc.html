@@ -50,7 +50,7 @@
             // create our webrtc connection
 
             var webrtc = (xirsysConnect.secure === true)
-                ? new $xirsys.simplewebrtc(xirsysConnect.token_url, xirsysConnect.ice_url)
+                ? new $xirsys.simplewebrtc(xirsysConnect.token_url, xirsysConnect.ice_url, xirsysConnect.room_url)
                 : new $xirsys.simplewebrtc();
             var connectionProperties = xirsysConnect.data;
             webrtc.connect(

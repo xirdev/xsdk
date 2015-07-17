@@ -17,6 +17,7 @@ var xirsysConnect = {
 	secure : true,
 	token_url : 'https://service.xirsys.com/signal/token',
 	ice_url : 'https://service.xirsys.com/ice',
+	room_url : 'https://service.xirsys.com/room',
 	data : {
 		domain : 'www.your-domain.com',
 		application : 'default',
