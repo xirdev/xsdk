@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>SimpleWebRTC Demo</title>
+        <title>Intermediate SimpleWebRTC Demo</title>
     </head>
     <body>
         <h1 id="title">Start a room</h1>
@@ -39,17 +39,19 @@
         <div>
             <h3>Usage</h3>
             <p>This SimpleWebRTC demo is a close copy of &Yet's demo, with very minimal changes to make it work with XirSys services and signalling.  As such, this demo is not intended to be an example of an end user application.</p>
-            <p>As a requirement, when entering a room name, be sure to supply the name of a room which exists in the XirSys dashboard for your account.  Also, make sure to enter your correct account details in the xirsys_connect.js file.</p>
         </div>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="thirdparty/simplewebrtc.bundle.js"></script>
         <script src="xirsys_connect.js"></script>
         <script src="lib/xirsys.core.js"></script>
         <script src="lib/xirsys.api.js"></script>
         <script src="lib/xirsys.simplewebrtc.js"></script>
-        <script src="thirdparty/simplewebrtc.bundle.js"></script>
         <script>
             // create our webrtc connection
-            var webrtc = new $xirsys.simplewebrtc((xirsysConnect.secure === true) ? xirsysConnect.server : null);
+
+            var webrtc = (xirsysConnect.secure === true)
+                ? new $xirsys.simplewebrtc(xirsysConnect.token_url, xirsysConnect.ice_url)
+                : new $xirsys.simplewebrtc();
             var connectionProperties = xirsysConnect.data;
             webrtc.connect(
                 connectionProperties,
