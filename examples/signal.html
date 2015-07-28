@@ -3,7 +3,7 @@
 <head>
 
 	<title>Signal Test</title>
-	<link rel="stylesheet" type="text/css" href="css/style.css"></link>
+	<link rel="stylesheet" type="text/css" href="../css/style.css"></link>
 	<script src="xirsys_connect.js"></script>
 	<script src="../lib/xirsys.core.js"></script>
 	<script src="../lib/xirsys.signal.js"></script>
@@ -85,31 +85,32 @@
 
 			// When a peer connects to signalling, we
 			// get notified here.
-			$xirsys.events.getInstance().addListener($xirsys.signal.peerConnected, function ($msg) {
+			$xirsys.events.getInstance().on($xirsys.signal.peerConnected, function ($evt, $msg) {
 				addPeer($msg);
 			});
 			
 			// When a peer leaves (disconnects) from
 			// the signalling, we get notified here.
-			$xirsys.events.getInstance().addListener($xirsys.signal.peerRemoved, function ($peer) {
+			$xirsys.events.getInstance().on($xirsys.signal.peerRemoved, function ($evt, $peer) {
+				console.log(arguments);
 				removePeer($peer);
 			});
 			
 			// We get this when we login. There may be zero
 			// to many peers at this time.
-			$xirsys.events.getInstance().addListener($xirsys.signal.peers, function ($msg) {
+			$xirsys.events.getInstance().on($xirsys.signal.peers, function ($evt, $msg) {
 				for (var i = 0; i < $msg.users.length; i++) {
 					addPeer($msg.users[i]);
 				}
 			});
 
-			$xirsys.events.getInstance().addListener($xirsys.signal.message, function ($msg) {
+			$xirsys.events.getInstance().on($xirsys.signal.message, function ($evt, $msg) {
 				if ($msg.sender != name) {
 					addMessage(stripLeaf($msg.sender) + ": " + $msg.data);
 				}
 			});
 
-			$xirsys.events.getInstance().addListener($xirsys.signal.error, function ($msg) {
+			$xirsys.events.getInstance().on($xirsys.signal.error, function ($evt, $msg) {
 				console.error("error: ", $msg);
 			});
 

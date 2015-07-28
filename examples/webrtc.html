@@ -67,19 +67,19 @@
 
 				// When a peer connects to signalling, we
 				// get notified here.
-				$xirsys.events.getInstance().addListener($xirsys.signal.peerConnected, function ($msg) {
+				$xirsys.events.getInstance().on($xirsys.signal.peerConnected, function ($evt, $msg) {
 					addPeer($msg);
 				});
 				
 				// When a peer leaves (disconnects) from
 				// the signalling, we get notified here.
-				$xirsys.events.getInstance().addListener($xirsys.signal.peerRemoved, function ($msg) {
+				$xirsys.events.getInstance().on($xirsys.signal.peerRemoved, function ($evt, $msg) {
 					removePeer($msg);
 				});
 				
 				// We get this when we login. There may be zero
 				// to many peers at this time.
-				$xirsys.events.getInstance().addListener($xirsys.signal.peers, function ($msg) {
+				$xirsys.events.getInstance().on($xirsys.signal.peers, function ($evt, $msg) {
 					for (var i = 0; i < $msg.users.length; i++) {
 						addPeer($msg.users[i]);
 					}
@@ -87,7 +87,7 @@
 
 				// Here, we listen for an offer, so that
 				// we can return the call, making it two way.
-				$xirsys.events.getInstance().addListener($xirsys.p2p.offer, function ($status, $peer) {
+				$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $status, $peer) {
 					// If we're not calling, then we're answering.
 					if ($status != $xirsys.p2p.CALLING) {
 						// So, go ahead and create a call going
