@@ -1,0 +1,161 @@
+<!DOCTYPE>
+<html>
+<head>
+
+	<title>Signal Test</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css"></link>
+	<script src="xirsys_connect.js"></script>
+	<script src="../lib/xirsys.core.js"></script>
+	<script src="../lib/xirsys.signal.js"></script>
+	<script>
+	
+		'use strict';
+
+		window.onload = function () {
+			// Getting references to page DOM.
+			var sendMessage = document.getElementById("sendMessage"),
+				peers = document.getElementById("peers"),
+				message = document.getElementById("message"),
+				messages = document.getElementById("messages"),
+				login = document.getElementById("login"),
+				username = document.getElementById("username"),
+				name = "";
+
+			// Create a signal object.
+			var s = new $xirsys.signal((xirsysConnect.secure === true) ? xirsysConnect.server : null);
+
+			// When the connect button is clicked...
+			login.onsubmit = function ($event) {
+				$event.preventDefault();
+				document.getElementById('login-btn').style.visibility = 'hidden';
+				// Make the username valid.
+				name = username.value.replace(/\W+/g, "");
+				if (!name || name == "") {
+					return;
+				}
+				var connectionProperties = xirsysConnect.data;
+				connectionProperties.username = name;
+				s.connect(connectionProperties);
+			}
+
+			// Peer connected helper function (UI only).
+			var addPeer = function ($peer_name) {
+				if (!!document.getElementById("peer_" + $peer_name) || $peer_name == name) {
+					return;
+				}
+				var node = document.createElement("div"),
+					btn = document.createElement("input");
+				btn.setAttribute('type', 'radio');
+				btn.setAttribute('name', 'peer');
+				btn.setAttribute('value', $peer_name);
+				node.appendChild(btn);
+				node.appendChild(document.createTextNode(stripLeaf($peer_name)));
+				peers.appendChild(node);
+				node.id = "peer" + $peer_name;
+				node.className = "peer";
+			};
+
+			// Peer removal helper function (UI only).
+			var removePeer = function ($peer_name) {
+				var node = document.getElementById("peer" + $peer_name);
+				peers.removeChild(node);
+			};
+
+			// Peer value helper function (UI only).
+			var selectedPeer = function () {
+				var peer = document.getElementsByName("peer");
+				console.log(peer);
+				for (var i=0, l=peer.length; i<l; i++) {
+					if (peer[i].checked) {
+						return (peer[i].value == "__all__") ? 
+							undefined : peer[i].value;
+					}
+				}
+			};
+
+			var addMessage = function ($msg) {
+				var d = document.createElement("div");
+				d.appendChild(document.createTextNode($msg));
+				messages.appendChild(d);
+			};
+
+			var stripLeaf = function (p) {
+				 return p.substr(p.lastIndexOf("/")+1)
+			};
+
+			// When a peer connects to signalling, we
+			// get notified here.
+			$xirsys.events.getInstance().addListener($xirsys.signal.peerConnected, function ($msg) {
+				addPeer($msg);
+			});
+			
+			// When a peer leaves (disconnects) from
+			// the signalling, we get notified here.
+			$xirsys.events.getInstance().addListener($xirsys.signal.peerRemoved, function ($peer) {
+				removePeer($peer);
+			});
+			
+			// We get this when we login. There may be zero
+			// to many peers at this time.
+			$xirsys.events.getInstance().addListener($xirsys.signal.peers, function ($msg) {
+				for (var i = 0; i < $msg.users.length; i++) {
+					addPeer($msg.users[i]);
+				}
+			});
+
+			$xirsys.events.getInstance().addListener($xirsys.signal.message, function ($msg) {
+				if ($msg.sender != name) {
+					addMessage(stripLeaf($msg.sender) + ": " + $msg.data);
+				}
+			});
+
+			$xirsys.events.getInstance().addListener($xirsys.signal.error, function ($msg) {
+				console.error("error: ", $msg);
+			});
+
+			// Here, we do something when the send button
+			// is clicked.
+			sendMessage.onsubmit = function ($event) {
+				$event.preventDefault();
+				var peer = selectedPeer();
+				addMessage(name + ": " + message.value);
+				if (!!peer) {
+					console.log(peer);
+					s.send("message", message.value, peer);
+				} else {
+					console.log('no peer');
+					s.send("message", message.value);
+				}
+				message.value = '';
+			}
+		}
+
+	</script>
+
+</head>
+<body>
+
+	<h1>Signal Demo</h1>
+	<section>
+		<form id="login" class="box">
+			Username: <input type="text" id="username" placeholder="enter a username" />
+			<button id="login-btn" type="submit">connect</button>
+		</form>
+		<div id="peers" class="box">
+			<h2>Peers</h2>
+			<div class="peer">
+				<input type="radio" name="peer" value="__all__" checked="checked"/>
+				&lt;All peers&gt;
+			</div> 
+		</div>
+	</section>
+	<section>
+		<div id="messages" class="box"></div>
+		<form id="sendMessage" class="message box">
+			New message: <input type="text" id="message" />
+			<button type="submit">Send</button>
+		</form>
+	</section>
+
+</body></html>
+
