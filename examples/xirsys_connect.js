@@ -1,27 +1,26 @@
-// Ident and secret should ideally be passed from a server for security purposes.
-// If serverAuthentication is true then you should remove these two values.
+// 'ident' and 'secret' should ideally be passed server-side for security purposes.
+// If secureTokenRetrieval is true then you should remove these two values.
 
-// var xirsysConnect = {
-// 	secure : false,
-// 	data : {
-// 		domain : 'www.your-domain.com',
-// 		application : 'default',
-// 		room : 'default',
-// 		ident : 'your-ident',
-// 		secret : 'your-secret'
-// 	}
-// };
-
-// Secure method
+// Insecure method
 var xirsysConnect = {
-	secure : true,
-	token_url : 'https://service.xirsys.com/signal/token',
-	ice_url : 'https://service.xirsys.com/ice',
-	room_url : 'https://service.xirsys.com/room',
+	secureTokenRetrieval : false,
 	data : {
-		domain : 'www.your-domain.com',
-		application : 'default',
-		room : 'default'
+		domain : '<your-domain>',
+		application : '<application-name>',
+		room : '<room-name>',
+		ident : '<your-ident>',
+		secret : '<your-secret>'
 	}
 };
+
+// Secure method
+/*var xirsysConnect = {
+	secureTokenRetrieval : true,
+	server : '../getToken.php',
+	info : {
+		domain : '<your-domain>',
+		application : '<application-name>',
+		room : '<room-name>'
+	}
+};*/
 

@@ -22,7 +22,7 @@
 				name = "";
 
 			// Create a signal object.
-			var s = new $xirsys.signal((xirsysConnect.secure === true) ? xirsysConnect.server : null);
+			var s = new $xirsys.signal((xirsysConnect.secureTokenRetrieval === true) ? xirsysConnect.server : null);
 
 			// When the connect button is clicked...
 			login.onsubmit = function ($event) {

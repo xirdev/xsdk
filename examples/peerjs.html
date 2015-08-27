@@ -1,9 +1,13 @@
 <html>
 <head>
 	<title>PeerJS - Video chat example</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css"></link>
 	<link rel="stylesheet" href="../css/peerjs.css">
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
 	<script type="text/javascript" src="../thirdparty/peer.js"></script>
+	<script src="xirsys_connect.js"></script>
+	<script src="../lib/xirsys.core.js"></script>
+	<script src="../lib/xirsys.signal.js"></script>
 	<script>
 
 		// Compatibility shim
@@ -13,19 +17,15 @@
 
 		// This object will take in an array of XirSys STUN / TURN servers
 		// and override the original config object
-		var customConfig;
+		var customConfig,
+			data = xirsysConnect.data;
+			
+		data.secure = ( xirsysConnect.secureTokenRetrieval === true ) ? 1 : 0;
 	
 		// Call XirSys ICE servers
 		$.ajax({
-			url: "https://service.xirsys.com/ice",
-			data: {
-				ident: "***REMOVED***",
-				secret: "***REMOVED***",
-				domain: "www.xirsys.com",
-				application: "default",
-				room: "default",
-				secure: 1
-			},
+			url: $xirsys.baseUrl + 'ice',
+			data: xirsysConnect.data,
 			success: function (data, status) {
 				// data.d is where the iceServers object lives
 				customConfig = data.d;

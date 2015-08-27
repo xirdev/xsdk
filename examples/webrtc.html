@@ -27,7 +27,7 @@
 				}
 				
 				var p = new $xirsys.p2p(
-					(xirsysConnect.secure === true) ? xirsysConnect.server : null, 
+					(xirsysConnect.secureTokenRetrieval === true) ? xirsysConnect.server : null, 
 					{audio: true, video: true, forceTurn: false}, 
 					document.getElementById("localVideo"), 
 					document.getElementById("remoteVideo")

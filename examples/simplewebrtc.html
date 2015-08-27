@@ -49,12 +49,13 @@
         <script>
             // create our webrtc connection
 
-            var webrtc = (xirsysConnect.secure === true)
-                ? new $xirsys.simplewebrtc(xirsysConnect.token_url, xirsysConnect.ice_url, xirsysConnect.room_url)
-                : new $xirsys.simplewebrtc();
-            var connectionProperties = xirsysConnect.data;
+			if ( xirsysConnect.secureTokenRetrieval === true ) {
+				console.log('This demo has not been configured to be used with secure token retrieval yet');
+			}
+			
+            var webrtc = new $xirsys.simplewebrtc();
             webrtc.connect(
-                connectionProperties,
+                xirsysConnect.data,
                 {
                     localVideoEl: 'localVideo', // the id/dom element to hold "our" video
                     remoteVideosEl: 'remotesVideos', // the id/dom element to hold remote videos // Should this be 'remotes' instead?
