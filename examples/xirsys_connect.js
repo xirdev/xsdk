@@ -9,7 +9,8 @@ var xirsysConnect = {
 		application : '<application-name>',
 		room : '<room-name>',
 		ident : '<your-ident>',
-		secret : '<your-secret>'
+		secret : '<your-secret>',
+		secure : 1
 	}
 };
 
@@ -20,7 +21,8 @@ var xirsysConnect = {
 	info : {
 		domain : '<your-domain>',
 		application : '<application-name>',
-		room : '<room-name>'
+		room : '<room-name>',
+		secure : 1
 	}
 };*/
 

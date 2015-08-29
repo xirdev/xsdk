@@ -20,8 +20,6 @@
 		var customConfig,
 			data = xirsysConnect.data;
 			
-		data.secure = ( xirsysConnect.secureTokenRetrieval === true ) ? 1 : 0;
-	
 		// Call XirSys ICE servers
 		$.ajax({
 			url: $xirsys.baseUrl + 'ice',
