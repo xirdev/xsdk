@@ -5,11 +5,11 @@
 var xirsysConnect = {
 	secureTokenRetrieval : false,
 	data : {
-		domain : '<your-domain>',
-		application : '<application-name>',
-		room : '<room-name>',
-		ident : '<your-ident>',
-		secret : '<your-secret>',
+		domain : '< www.yourdomain.com >',
+		application : 'default',
+		room : 'default',
+		ident : '< Your username (not your email) >',
+		secret : '< Your secret API token >',
 		secure : 1
 	}
 };
@@ -19,9 +19,9 @@ var xirsysConnect = {
 	secureTokenRetrieval : true,
 	server : '../getToken.php',
 	info : {
-		domain : '<your-domain>',
-		application : '<application-name>',
-		room : '<room-name>',
+		domain : '< www.yourdomain.com >',
+		application : 'default',
+		room : 'default',
 		secure : 1
 	}
 };*/

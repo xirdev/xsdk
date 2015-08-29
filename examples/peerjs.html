@@ -17,8 +17,7 @@
 
 		// This object will take in an array of XirSys STUN / TURN servers
 		// and override the original config object
-		var customConfig,
-			data = xirsysConnect.data;
+		var customConfig;
 			
 		// Call XirSys ICE servers
 		$.ajax({
@@ -32,20 +31,21 @@
 			async: false
 		});
 		
+		// Setting the id on the client side to avoid calls to the PeerJS server
 		var date = new Date(),
 			seconds = date.getTime(),
 			id = 'User' + (seconds + 3);
 				
 		// PeerJS object
 		var peer = new Peer(id, {
-			key: 'sl8vk0fnzasb57b9',
+			key: 'sl8vk0fnzasb57b9', // Replace with your own key
 			debug: 3,
 			config: customConfig
 		});
 		
 		/* End of custom Xirsys code */
 
-		// PeerJS object
+		// PeerJS object that doesn't use the Xirsys STUN / TURN servers
 		//var peer = new Peer({ key: 'lwjd5qra8257b9', debug: 3});
 
 		peer.on('open', function(){
