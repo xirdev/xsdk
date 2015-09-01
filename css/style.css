@@ -32,14 +32,28 @@ section {
 	right: 10px;
 }
 
-.video-container {
+#lVideo .video-container {
 	display: inline-block;
 	width: 220px;
 	height: 170px;
 }
 
-video {
+#rVideo .video-container {
+	display: inline-block;
+	width: 420px;
+	height: 320px;
+}
+
+#lVideo video {
 	width: 200px;
 	height: 150px;
-	margin: 10px;
+}
+
+#rVideo video {
+	width: 400px;
+	height: 300px;
+}
+
+.hidden {
+	display: none;
 }
