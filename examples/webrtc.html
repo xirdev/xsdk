@@ -9,12 +9,22 @@
 	<script src="../lib/xirsys.p2p.adapter.js"></script>
 	<script src="../lib/xirsys.p2p.js"></script>
 	<script>
+	
+		'use strict'
 
 		window.onload = function () {
 			// Getting references to page DOM.
 			var peers = document.getElementById("peers"),
   				login = document.getElementById("login"),
-  				username = document.getElementById("username");
+  				username = document.getElementById("username"),
+  				name = "";
+				
+			var p = new $xirsys.p2p(
+				(xirsysConnect.secureTokenRetrieval === true) ? xirsysConnect.server : null, 
+				{audio: true, video: true, forceTurn: false}, 
+				document.getElementById("localVideo"), 
+				document.getElementById("remoteVideo")
+			);
 
 			// When the connect button is clicked...
 			login.onsubmit = function ($event) {
@@ -25,77 +35,73 @@
 				if (!name || name == "") {
 					return;
 				}
-				
-				var p = new $xirsys.p2p(
-					(xirsysConnect.secureTokenRetrieval === true) ? xirsysConnect.server : null, 
-					{audio: true, video: true, forceTurn: false}, 
-					document.getElementById("localVideo"), 
-					document.getElementById("remoteVideo")
-				);
-				
 				var connectionProperties = xirsysConnect.data;
 				connectionProperties.username = name;
-				var s = p.open(connectionProperties);
-
-				// Peer connected helper function (UI only).
-				var addPeer = function ($peer_name) {
-					if (!!document.getElementById("peer_" + $peer_name) || $peer_name == name) {
-						return;
-					}
-					var node = document.createElement("div"),
-						btn = document.createElement("button");
-					btn.appendChild(document.createTextNode("connect"));
-					node.appendChild(document.createTextNode(stripLeaf($peer_name)));
-					node.appendChild(btn);
-					peers.appendChild(node);
-					node.id = "peer_" + $peer_name;
-					node.className = "peer";
-					btn.onclick = function () {
-						p.call($peer_name);
-					}
-				};
-
-				// Peer removal helper function (UI only).
-				var removePeer = function ($peer_name) {
-					var node = document.getElementById("peer_" + $peer_name);
-					peers.removeChild(node);
-				};
-
-				var stripLeaf = function (p) {
-					return p.substr(p.lastIndexOf("/")+1)
-				};
-
-				// When a peer connects to signalling, we
-				// get notified here.
-				$xirsys.events.getInstance().on($xirsys.signal.peerConnected, function ($evt, $msg) {
-					addPeer($msg);
-				});
-				
-				// When a peer leaves (disconnects) from
-				// the signalling, we get notified here.
-				$xirsys.events.getInstance().on($xirsys.signal.peerRemoved, function ($evt, $msg) {
-					removePeer($msg);
-				});
-				
-				// We get this when we login. There may be zero
-				// to many peers at this time.
-				$xirsys.events.getInstance().on($xirsys.signal.peers, function ($evt, $msg) {
-					for (var i = 0; i < $msg.users.length; i++) {
-						addPeer($msg.users[i]);
-					}
-				});
-
-				// Here, we listen for an offer, so that
-				// we can return the call, making it two way.
-				$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $status, $peer) {
-					// If we're not calling, then we're answering.
-					if ($status != $xirsys.p2p.CALLING) {
-						// So, go ahead and create a call going
-						// the other way.
-						p.call($peer);
-					}
-				});
+				p.open(connectionProperties);
 			}
+
+			// Peer connected helper function (UI only).
+			var addPeer = function ($peer_name) {
+				if (!!document.getElementById("peer_" + $peer_name) || $peer_name == name) {
+					return;
+				}
+				var node = document.createElement("div"),
+					btn = document.createElement("button");
+				btn.appendChild(document.createTextNode("connect"));
+				node.appendChild(document.createTextNode(stripLeaf($peer_name)));
+				node.appendChild(btn);
+				peers.appendChild(node);
+				node.id = "peer_" + $peer_name;
+				node.className = "peer";
+				btn.onclick = function () {
+					p.call($peer_name);
+				}
+			};
+
+			// Peer removal helper function (UI only).
+			var removePeer = function ($peer_name) {
+				var node = document.getElementById("peer_" + $peer_name);
+				peers.removeChild(node);
+			};
+
+			var stripLeaf = function (p) {
+				return p.substr(p.lastIndexOf("/")+1)
+			};
+
+			// When a peer connects to signalling, we
+			// get notified here.
+			$xirsys.events.getInstance().on($xirsys.signal.peerConnected, function ($evt, $msg) {
+				addPeer($msg);
+			});
+			
+			// When a peer leaves (disconnects) from
+			// the signalling, we get notified here.
+			$xirsys.events.getInstance().on($xirsys.signal.peerRemoved, function ($evt, $msg) {
+				removePeer($msg);
+			});
+			
+			// We get this when we login. There may be zero
+			// to many peers at this time.
+			$xirsys.events.getInstance().on($xirsys.signal.peers, function ($evt, $msg) {
+				for (var i = 0; i < $msg.users.length; i++) {
+					addPeer($msg.users[i]);
+				}
+			});
+
+			// Here, we listen for an offer, so that
+			// we can return the call, making it two way.
+			$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $status, $peer) {
+				// If we're not calling, then we're answering.
+				if ($status != $xirsys.p2p.CALLING) {
+					// So, go ahead and create a call going
+					// the other way.
+					p.call($peer);
+				}
+			});
+			
+			$xirsys.events.getInstance().on($xirsys.signal.error, function ($evt, $msg) {
+				console.error("error: ", $msg);
+			});
 		}
 
 	</script>
