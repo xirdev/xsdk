@@ -92,7 +92,6 @@
 			// When a peer leaves (disconnects) from
 			// the signalling, we get notified here.
 			$xirsys.events.getInstance().on($xirsys.signal.peerRemoved, function ($evt, $peer) {
-				console.log(arguments);
 				removePeer($peer);
 			});
 			

@@ -92,7 +92,7 @@
 			// we can return the call, making it two way.
 			$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $status, $peer) {
 				// If we're not calling, then we're answering.
-				if ($status != $xirsys.p2p.CALLING) {
+				if ($status != $xirsys.p2p.CALLING && $status != $xirsys.p2p.CONNECTED && $status != $xirsys.p2p.ANSWERING) {
 					// So, go ahead and create a call going
 					// the other way.
 					p.call($peer);
