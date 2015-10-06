@@ -99,7 +99,9 @@
 				// If we're not calling, then we're answering.
 				if ($status != $xirsys.p2p.CALLING && $status != $xirsys.p2p.CONNECTED && $status != $xirsys.p2p.ANSWERING) {
 					// So, go ahead and create a call going the other way.
-					p.call($peer);
+					if (confirm("Incoming call from " + stripLeaf($peer) + ". Do you want to take this call?")) {
+						p.call($peer);
+					}
 				}
 			});
 			
