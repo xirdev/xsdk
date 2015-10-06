@@ -17,6 +17,7 @@
 			var peers = document.getElementById("peers"),
   				login = document.getElementById("login"),
   				username = document.getElementById("username"),
+  				usernameLabel = document.getElementById("username-label"),
   				name = "";
 				
 			var p = new $xirsys.p2p(
@@ -29,7 +30,7 @@
 			// When the connect button is clicked...
 			login.onsubmit = function ($event) {
 				$event.preventDefault();
-				document.getElementById('login-btn').style.visibility = 'hidden';
+				login.style.visibility = 'hidden';
 				// Make the username valid.
 				name = username.value.replace(/\W+/g, "");
 				if (!name || name == "") {
@@ -43,6 +44,10 @@
 			// Peer connected helper function (UI only).
 			var addPeer = function ($peer_name) {
 				if (!!document.getElementById("peer_" + $peer_name) || $peer_name == name) {
+					while (usernameLabel.hasChildNodes()) {
+						usernameLabel.removeChild(usernameLabel.lastChild);
+					}
+					usernameLabel.appendChild(document.createTextNode(stripLeaf($peer_name)));
 					return;
 				}
 				var node = document.createElement("div"),
@@ -93,8 +98,7 @@
 			$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $status, $peer) {
 				// If we're not calling, then we're answering.
 				if ($status != $xirsys.p2p.CALLING && $status != $xirsys.p2p.CONNECTED && $status != $xirsys.p2p.ANSWERING) {
-					// So, go ahead and create a call going
-					// the other way.
+					// So, go ahead and create a call going the other way.
 					p.call($peer);
 				}
 			});
@@ -114,6 +118,9 @@
 			Username: <input type="text" id="username" placeholder="enter a username" />
 			<button id="login-btn" type="submit">connect</button>
 		</form>
+		<div class="box">
+			Your username: <strong><span id="username-label"></span></strong>
+		</div>
 		<div id="peers" class="box">
 			<h2>Peers</h2>
 		</div>
