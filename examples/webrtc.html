@@ -18,7 +18,8 @@
   				login = document.getElementById("login"),
   				username = document.getElementById("username"),
   				usernameLabel = document.getElementById("username-label"),
-  				name = "";
+  				name = "",
+  				automaticAnswer = false;
 				
 			var p = new $xirsys.p2p(
 				(xirsysConnect.secureTokenRetrieval === true) ? xirsysConnect.server : null, 
@@ -37,6 +38,8 @@
 					return;
 				}
 				var connectionProperties = xirsysConnect.data;
+				// Cancelling automatic answers to call offers (see p2p onSignalMessage)
+				connectionProperties.automaticAnswer = automaticAnswer;
 				connectionProperties.username = name;
 				p.open(connectionProperties);
 			}
@@ -92,20 +95,16 @@
 					addPeer($msg.users[i]);
 				}
 			});
-
-			// Here, we listen for an offer, so that
-			// we can return the call, making it two way.
-			$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $status, $peer) {
-				// If we're not calling, then we're answering.
-				if ($status != $xirsys.p2p.CALLING && $status != $xirsys.p2p.CONNECTED && $status != $xirsys.p2p.ANSWERING) {
-					// So answer
-					if (confirm("Incoming call from " + stripLeaf($peer) + ". Do you want to take this call?")) {
-						// Currently no way of accepting or rejecting an offer.
+			
+			// If you've turned off automatic responses then listen to call
+			// offers and allow the user to decide whether to respond or not.
+			if (automaticAnswer === false) {
+				$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $peer, $data) {
+					if (confirm('Take a call from ' + $peer + '?')) {
+						p.answer($peer, $data);
 					}
-					// Hang up after twenty seconds to demonstrate method works
-					setTimeout(function(){console.log('hanging up'); p.hangUp();}, 20000);
-				}
-			});
+				});
+			}
 			
 			$xirsys.events.getInstance().on($xirsys.signal.error, function ($evt, $msg) {
 				console.error("error: ", $msg);
