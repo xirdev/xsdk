@@ -18,6 +18,7 @@
   				login = document.getElementById("login"),
   				username = document.getElementById("username"),
   				usernameLabel = document.getElementById("username-label"),
+  				hangUp = document.getElementById("hang-up"),
   				name = "",
   				automaticAnswer = false;
 				
@@ -65,6 +66,11 @@
 					p.call($peer_name);
 				}
 			};
+			
+			// Ends current call, if any.
+			hangUp.onclick = function () {
+				p.hangUp();
+			}
 
 			// Peer removal helper function (UI only).
 			var removePeer = function ($peer_name) {
@@ -126,6 +132,7 @@
 		</div>
 		<div id="peers" class="box">
 			<h2>Peers</h2>
+			<button id="hang-up">Hang up</button><br><br>
 		</div>
 	</section>
 	<section>
