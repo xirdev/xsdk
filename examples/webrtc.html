@@ -1,6 +1,6 @@
 <!DOCTYPE><html><head>
 
-	<title>WebRTC Test</title>
+	<title>Xirsys XSDK: WebRTC Example</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css"></link>
 	<script src="xirsys_connect.js"></script>
 	<script src="../lib/xirsys.core.js"></script>
@@ -13,39 +13,58 @@
 		'use strict'
 
 		window.onload = function () {
-			// Getting references to page DOM.
-			var peers = document.getElementById("peers"),
-  				login = document.getElementById("login"),
-  				username = document.getElementById("username"),
+		
+			// Getting references to page DOM for signalling.
+//			var sendMessage = document.getElementById("sendMessage"),
+			var	peers = document.getElementById("peers"),
+//				message = document.getElementById("message"),
+//				messages = document.getElementById("messages"),
+				login = document.getElementById("login"),
+				username = document.getElementById("username"),
   				usernameLabel = document.getElementById("username-label"),
-  				hangUp = document.getElementById("hang-up"),
-  				name = "",
+				name = "";
+		
+			// Getting references to page DOM for video calling.
+			var hangUp = document.getElementById("hang-up"),
+				localVideo = document.getElementById("localVideo"),
+				remoteVideo = document.getElementById("remoteVideo");
+			
+			// Settings for video calling.
+  			var useAudio = true,
+  				useVideo = true,
+  				forceTurn = false,
   				automaticAnswer = false;
-				
+			
+			// Making the Xirsys p2p instance.
 			var p = new $xirsys.p2p(
-				(xirsysConnect.secureTokenRetrieval === true) ? xirsysConnect.server : null, 
-				{audio: true, video: true, forceTurn: false}, 
-				document.getElementById("localVideo"), 
-				document.getElementById("remoteVideo")
+				(xirsysConnect.secureTokenRetrieval === true) ? 
+					xirsysConnect.server : null, 
+				{
+					audio: useAudio, 
+					video: useVideo, 
+					forceTurn: forceTurn
+				}, 
+				localVideo, 
+				remoteVideo	
 			);
 
-			// When the connect button is clicked...
+			// When the connect button is clicked hide log-in, check the user-
+			// name is valid, cancel automatic answers (see xirsys.p2p.js
+			// onSignalMessage method) and open a connexion to the server.
 			login.onsubmit = function ($event) {
 				$event.preventDefault();
 				login.style.visibility = 'hidden';
-				// Make the username valid.
 				name = username.value.replace(/\W+/g, "");
 				if (!name || name == "") {
 					return;
 				}
 				var connectionProperties = xirsysConnect.data;
-				// Cancelling automatic answers to call offers (see p2p onSignalMessage)
 				connectionProperties.automaticAnswer = automaticAnswer;
 				connectionProperties.username = name;
 				p.open(connectionProperties);
 			}
 
-			// Peer connected helper function (UI only).
+			// Add a peer element to the page when a new peer connects.
 			var addPeer = function ($peer_name) {
 				if (!!document.getElementById("peer_" + $peer_name) || $peer_name == name) {
 					while (usernameLabel.hasChildNodes()) {
@@ -72,30 +91,28 @@
 				p.hangUp();
 			}
 
-			// Peer removal helper function (UI only).
+			// Removes peer elements from the page when a peer leaves.
 			var removePeer = function ($peer_name) {
 				var node = document.getElementById("peer_" + $peer_name);
 				peers.removeChild(node);
 			};
 
-			var stripLeaf = function (p) {
-				return p.substr(p.lastIndexOf("/")+1)
+			// Returns a peer name without the room and application details.
+			var stripLeaf = function ($p) {
+				return $p.substr($p.lastIndexOf("/")+1)
 			};
 
-			// When a peer connects to signalling, we
-			// get notified here.
+			// When a peer connects to signal server we get notified.
 			$xirsys.events.getInstance().on($xirsys.signal.peerConnected, function ($evt, $msg) {
 				addPeer($msg);
 			});
 			
-			// When a peer leaves (disconnects) from
-			// the signalling, we get notified here.
+			// When a peer disconnects from the signal server we get notified.
 			$xirsys.events.getInstance().on($xirsys.signal.peerRemoved, function ($evt, $msg) {
 				removePeer($msg);
 			});
 			
-			// We get this when we login. There may be zero
-			// to many peers at this time.
+			// Triggered on login. There may be zero to many peers at this time.
 			$xirsys.events.getInstance().on($xirsys.signal.peers, function ($evt, $msg) {
 				for (var i = 0; i < $msg.users.length; i++) {
 					addPeer($msg.users[i]);
@@ -104,6 +121,7 @@
 			
 			// If you've turned off automatic responses then listen to call
 			// offers and allow the user to decide whether to respond or not.
+			// Else calls are automatically answered (see xirsys.p2p.js).
 			if (automaticAnswer === false) {
 				$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $peer, $data) {
 					if (confirm('Take a call from ' + $peer + '?')) {
@@ -112,6 +130,7 @@
 				});
 			}
 			
+			// Log errors in the terminal.
 			$xirsys.events.getInstance().on($xirsys.signal.error, function ($evt, $msg) {
 				console.error("error: ", $msg);
 			});
