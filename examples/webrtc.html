@@ -10,25 +10,27 @@
 	<script src="../lib/xirsys.p2p.js"></script>
 	<script>
 	
-		'use strict'
+		'use strict';
 
 		window.onload = function () {
 		
+				/* Starting the demo application */
+		
 			// Getting references to page DOM for signalling.
-//			var sendMessage = document.getElementById("sendMessage"),
-			var	peers = document.getElementById("peers"),
-//				message = document.getElementById("message"),
-//				messages = document.getElementById("messages"),
-				login = document.getElementById("login"),
-				username = document.getElementById("username"),
-  				usernameLabel = document.getElementById("username-label"),
-				name = "";
+			var sendMessage = document.getElementById('sendMessage'),
+				peers = document.getElementById('peers'),
+				message = document.getElementById('message'),
+				messages = document.getElementById('messages'),
+				login = document.getElementById('login'),
+				username = document.getElementById('username'),
+  				usernameLabel = document.getElementById('username-label'),
+				name = '';
 		
 			// Getting references to page DOM for video calling.
-			var callPeer = document.getElementById("call-peer"),
-				hangUp = document.getElementById("hang-up"),
-				localVideo = document.getElementById("local-video"),
-				remoteVideo = document.getElementById("remote-video");
+			var callPeer = document.getElementById('call-peer'),
+				hangUp = document.getElementById('hang-up'),
+				localVideo = document.getElementById('local-video'),
+				remoteVideo = document.getElementById('remote-video');
 			
 			// Settings for video calling.
   			var useAudio = true,
@@ -48,22 +50,8 @@
 				localVideo, 
 				remoteVideo	
 			);
-
-			// When the connect button is clicked hide log-in, check the user-
-			// name is valid, cancel automatic answers (see xirsys.p2p.js
-			// onSignalMessage method) and open a connexion to the server.
-			login.onsubmit = function ($event) {
-				$event.preventDefault();
-				login.style.visibility = 'hidden';
-				name = username.value.replace(/\W+/g, "");
-				if (!name || name == "") {
-					return;
-				}
-				var connectionProperties = xirsysConnect.data;
-				connectionProperties.automaticAnswer = automaticAnswer;
-				connectionProperties.username = name;
-				p.open(connectionProperties);
-			}
+			
+				/* Primary user interface functions */
 
 			// When a peer connects check to see if it is the user. If it is 
 			// update the user's label element. If it is not check if the peer
@@ -75,50 +63,136 @@
 					}
 					usernameLabel.appendChild(document.createTextNode(stripLeaf($peerName)));
 				} else {
-					if (!document.getElementById("peer-" + $peerName)) {
-						var node = document.createElement("div"),
-							btn = document.createElement("input");
+					if (!document.getElementById('peer-' + $peerName)) {
+						var node = document.createElement('div'),
+							btn = document.createElement('input');
 						btn.setAttribute('type', 'radio');
 						btn.setAttribute('name', 'peer');
 						btn.setAttribute('value', $peerName);
 						node.appendChild(btn);
 						node.appendChild(document.createTextNode(stripLeaf($peerName)));
 						peers.appendChild(node);
-						node.id = "peer-" + $peerName;
-						node.className = "peer";
+						node.id = 'peer-' + $peerName;
+						node.className = 'peer';
+						addMessage($peerName + ' is online');
 					}
 				}
 			};
 			
 			// Removes peer elements from the page when a peer leaves.
 			var removePeer = function ($peerName) {
-				var node = document.getElementById("peer-" + $peerName);
+				var node = document.getElementById('peer-' + $peerName);
 				peers.removeChild(node);
+				addMessage($peerName + ' has gone offline');
 			};
+			
+			// Add a message to the conversation.
+			var addMessage = function ($msgLeader, $msgTrail) {
+				var msg = document.createElement('div'),
+					leader = document.createElement('strong');
+				leader.appendChild(document.createTextNode('[' + formattedTime() + '] ' + $msgLeader));
+				msg.appendChild(leader);
+				if (!!$msgTrail) {
+					msg.appendChild(document.createTextNode(': ' + $msgTrail));
+				}
+				messages.appendChild(msg);
+			};
+			
+			// Deal with an incoming call.
+			// If you've turned off automatic responses then listen to call
+			// offers and allow the user to decide whether to respond or not.
+			// Else calls are automatically answered (see xirsys.p2p.js).
+			var callIncoming = function ($peer, $data) {
+				if (automaticAnswer === false) {
+					if (confirm('Take a call from ' + $peer + '?')) {
+						p.answer($peer, $data);
+						addMessage('Taking a call from ' + $peer);
+					} else {
+						addMessage('Call from ' + $peer + ' rejected');
+					}
+				} else {
+					addMessage('Taking a call from ' + $peer);
+				}
+			}
+			
+				/* Secondary and generically useful functions */
 
 			// Get the name of the peer the user has selected.
 			var selectedPeer = function () {
-				var peer = document.getElementsByName("peer");
+				var peer = document.getElementsByName('peer');
 				for (var i=0, l=peer.length; i<l; i++) {
 					if (peer[i].checked) {
-						return (peer[i].value == "__all__") ? 
+						return (peer[i].value == '__all__') ? 
 							undefined : peer[i].value;
 					}
 				}
 			};
 
 			// Returns a peer name without the room and application details.
+			// This function may now be redundant as the format of messages from
+			// the Xirsys server has changed.
 			var stripLeaf = function ($p) {
-				return $p.substr($p.lastIndexOf("/")+1)
+				return $p.substr($p.lastIndexOf('/')+1)
 			};
+			
+			// Returns neatly formatted digital clock style time.
+			// As this demo doesn't store messages we are assuming dates are not
+			// relevent information.
+			var formattedTime = function () {
+				var t = new Date();
+				return ( '0' + t.getHours() ).slice( -2 ) + ':' + 
+					( '0' + t.getMinutes() ).slice( -2 ) + ':' + 
+					( '0' + t.getSeconds() ).slice( -2 );
+			};
+			
+				/* Handlers for the user interface */
+
+			// When the connect button is clicked hide log-in, check the user-
+			// name is valid, cancel automatic answers (see xirsys.p2p.js
+			// onSignalMessage method) and open a connexion to the server.
+			login.onsubmit = function ($event) {
+				$event.preventDefault();
+				login.style.visibility = 'hidden';
+				name = username.value.replace(/\W+/g, '');
+				if (!name || name == '') {
+					return;
+				}
+				var connectionProperties = xirsysConnect.data;
+				connectionProperties.automaticAnswer = automaticAnswer;
+				connectionProperties.username = name;
+				p.open(connectionProperties);
+			}
+			
+			// Send a message to one or all peers.
+			sendMessage.onsubmit = function ($event) {
+				$event.preventDefault();
+				if (!p.signal) {
+					addMessage('You are not yet connected to the signalling server');
+					return;
+				}
+				var peer = selectedPeer();
+				if (!!peer) {
+					p.signal.send('message', message.value, peer);
+				} else {
+					p.signal.send('message', message.value);
+				}
+				addMessage((!!peer) ? name + ' to ' + peer : name + ' to all', message.value);
+				message.value = '';
+			}
 			
 			// Initiates a call, if a single peer has been selected.
 			callPeer.onclick = function () {
 				var peerName = selectedPeer();
 				if (!!peerName) {
 					p.call(peerName);
+					addMessage('Calling ' + peerName);
+					// N.B. This demo doesn't include a method for noting
+					// rejected calls. This could be added in the demo by
+					// sending a message when rejecting the call, but it would
+					// be preferable to extend the xirsys.p2p class to
+					// automatically emit an event to the same effect.
 				} else {
-					alert("You must select a single peer before initiating a call");
+					addMessage('Error', 'You must select a single peer before initiating a call');
 				}
 				
 			}
@@ -126,7 +200,23 @@
 			// Ends current call, if any.
 			hangUp.onclick = function () {
 				p.hangUp();
+				//addMessage('Hanging up');
+				// N.B. As this function is 'dumb' (in that it doesn't need to 
+				// know if we are in a call as that is handled by the p2p class)
+				// it is not appropriate to add a message. 
+				// This demo also does not include a method for noting calls
+				// ended by the other party or by connexion difficulties.
+				// See 'callPeer.onclick' above for similar.
 			}
+			
+				/* Watching for and responding to XSDK events */
+			
+			// Triggered on login. There may be zero to many peers at this time.
+			$xirsys.events.getInstance().on($xirsys.signal.peers, function ($evt, $msg) {
+				for (var i = 0; i < $msg.users.length; i++) {
+					addPeer($msg.users[i]);
+				}
+			});
 
 			// When a peer connects to signal server we get notified.
 			$xirsys.events.getInstance().on($xirsys.signal.peerConnected, function ($evt, $msg) {
@@ -137,28 +227,23 @@
 			$xirsys.events.getInstance().on($xirsys.signal.peerRemoved, function ($evt, $msg) {
 				removePeer($msg);
 			});
-			
-			// Triggered on login. There may be zero to many peers at this time.
-			$xirsys.events.getInstance().on($xirsys.signal.peers, function ($evt, $msg) {
-				for (var i = 0; i < $msg.users.length; i++) {
-					addPeer($msg.users[i]);
+
+			// When a peer sends you (or you and all other peers) a message.
+			$xirsys.events.getInstance().on($xirsys.signal.message, function ($evt, $msg) {
+				if ($msg.sender != name) {
+					addMessage(stripLeaf($msg.sender), $msg.data);
 				}
 			});
 			
-			// If you've turned off automatic responses then listen to call
-			// offers and allow the user to decide whether to respond or not.
-			// Else calls are automatically answered (see xirsys.p2p.js).
-			if (automaticAnswer === false) {
-				$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $peer, $data) {
-					if (confirm('Take a call from ' + $peer + '?')) {
-						p.answer($peer, $data);
-					}
-				});
-			}
+			// When a peer offers you a connexion for a video call.
+			$xirsys.events.getInstance().on($xirsys.p2p.offer, function ($evt, $peer, $data) {
+				callIncoming($peer, $data);
+			});
 			
 			// Log errors in the terminal.
 			$xirsys.events.getInstance().on($xirsys.signal.error, function ($evt, $msg) {
-				console.error("error: ", $msg);
+				console.error('error: ', $msg);
+				addMessage('Error', 'There has been an error in the server connection');
 			});
 		}
 
@@ -183,6 +268,15 @@
 				&lt;All peers&gt;
 			</div> 
 		</div>
+	</section>
+	<section>
+		<div id="messages" class="box">
+			<h2>Conversation thread</h2>
+		</div>
+		<form id="sendMessage" class="message box">
+			New message: <input type="text" id="message" />
+			<button type="submit">Send</button>
+		</form>
 	</section>
 	<section>
 		<div id="lVideo" class="video-container box">
