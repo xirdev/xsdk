@@ -25,9 +25,10 @@
 				name = "";
 		
 			// Getting references to page DOM for video calling.
-			var hangUp = document.getElementById("hang-up"),
-				localVideo = document.getElementById("localVideo"),
-				remoteVideo = document.getElementById("remoteVideo");
+			var callPeer = document.getElementById("call-peer"),
+				hangUp = document.getElementById("hang-up"),
+				localVideo = document.getElementById("local-video"),
+				remoteVideo = document.getElementById("remote-video");
 			
 			// Settings for video calling.
   			var useAudio = true,
@@ -64,43 +65,68 @@
 				p.open(connectionProperties);
 			}
 
-			// Add a peer element to the page when a new peer connects.
-			var addPeer = function ($peer_name) {
-				if (!!document.getElementById("peer_" + $peer_name) || $peer_name == name) {
+			// When a peer connects check to see if it is the user. If it is 
+			// update the user's label element. If it is not check if the peer
+			// is already listed and add an element if not.s
+			var addPeer = function ($peerName) {
+				if ($peerName == name) {
 					while (usernameLabel.hasChildNodes()) {
 						usernameLabel.removeChild(usernameLabel.lastChild);
 					}
-					usernameLabel.appendChild(document.createTextNode(stripLeaf($peer_name)));
-					return;
-				}
-				var node = document.createElement("div"),
-					btn = document.createElement("button");
-				btn.appendChild(document.createTextNode("connect"));
-				node.appendChild(document.createTextNode(stripLeaf($peer_name)));
-				node.appendChild(btn);
-				peers.appendChild(node);
-				node.id = "peer_" + $peer_name;
-				node.className = "peer";
-				btn.onclick = function () {
-					p.call($peer_name);
+					usernameLabel.appendChild(document.createTextNode(stripLeaf($peerName)));
+				} else {
+					if (!document.getElementById("peer-" + $peerName)) {
+						var node = document.createElement("div"),
+							btn = document.createElement("input");
+						btn.setAttribute('type', 'radio');
+						btn.setAttribute('name', 'peer');
+						btn.setAttribute('value', $peerName);
+						node.appendChild(btn);
+						node.appendChild(document.createTextNode(stripLeaf($peerName)));
+						peers.appendChild(node);
+						node.id = "peer-" + $peerName;
+						node.className = "peer";
+					}
 				}
 			};
 			
-			// Ends current call, if any.
-			hangUp.onclick = function () {
-				p.hangUp();
-			}
-
 			// Removes peer elements from the page when a peer leaves.
-			var removePeer = function ($peer_name) {
-				var node = document.getElementById("peer_" + $peer_name);
+			var removePeer = function ($peerName) {
+				var node = document.getElementById("peer-" + $peerName);
 				peers.removeChild(node);
+			};
+
+			// Get the name of the peer the user has selected.
+			var selectedPeer = function () {
+				var peer = document.getElementsByName("peer");
+				for (var i=0, l=peer.length; i<l; i++) {
+					if (peer[i].checked) {
+						return (peer[i].value == "__all__") ? 
+							undefined : peer[i].value;
+					}
+				}
 			};
 
 			// Returns a peer name without the room and application details.
 			var stripLeaf = function ($p) {
 				return $p.substr($p.lastIndexOf("/")+1)
 			};
+			
+			// Initiates a call, if a single peer has been selected.
+			callPeer.onclick = function () {
+				var peerName = selectedPeer();
+				if (!!peerName) {
+					p.call(peerName);
+				} else {
+					alert("You must select a single peer before initiating a call");
+				}
+				
+			}
+			
+			// Ends current call, if any.
+			hangUp.onclick = function () {
+				p.hangUp();
+			}
 
 			// When a peer connects to signal server we get notified.
 			$xirsys.events.getInstance().on($xirsys.signal.peerConnected, function ($evt, $msg) {
@@ -140,7 +166,7 @@
 
 </head><body>
 
-	<h1>WebRTC Demo</h1>
+	<h1>Xirsys XSDK: WebRTC Example</h1>
 	<section>
 		<form id="login" class="box">
 			Username: <input type="text" id="username" placeholder="enter a username" />
@@ -151,15 +177,19 @@
 		</div>
 		<div id="peers" class="box">
 			<h2>Peers</h2>
-			<button id="hang-up">Hang up</button><br><br>
+			<button id="call-peer">Call</button><button id="hang-up">Hang up</button><br><br>
+			<div class="peer">
+				<input type="radio" name="peer" value="__all__" checked="checked"/>
+				&lt;All peers&gt;
+			</div> 
 		</div>
 	</section>
 	<section>
 		<div id="lVideo" class="video-container box">
-			<video autoplay="autoplay" id="localVideo" muted="true"></video>
+			<video autoplay="autoplay" id="local-video" muted="true"></video>
 		</div>
 		<div id="rVideo" class="video-container box">
-			<video autoplay="autoplay" id="remoteVideo"></video>
+			<video autoplay="autoplay" id="remote-video"></video>
 		</div>
 	</section>
 
