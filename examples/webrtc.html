@@ -1,7 +1,7 @@
 <!DOCTYPE><html><head>
 
 	<title>Xirsys XSDK: WebRTC Example</title>
-	<link rel="stylesheet" type="text/css" href="../css/style.css"></link>
+	<link rel="stylesheet" type="text/css" href="../css/video-call.css"></link>
 	<script src="xirsys_connect.js"></script>
 	<script src="../lib/xirsys.core.js"></script>
 	<script src="../lib/xirsys.signal.js"></script>
@@ -96,6 +96,7 @@
 					msg.appendChild(document.createTextNode(': ' + $msgTrail));
 				}
 				messages.appendChild(msg);
+				messages.parentNode.scrollTop = messages.parentNode.scrollHeight;
 			};
 			
 			// Deal with an incoming call.
@@ -152,7 +153,7 @@
 			// onSignalMessage method) and open a connexion to the server.
 			login.onsubmit = function ($event) {
 				$event.preventDefault();
-				login.style.visibility = 'hidden';
+				login.parentNode.style.visibility = 'hidden';
 				name = username.value.replace(/\W+/g, '');
 				if (!name || name == '') {
 					return;
@@ -176,7 +177,7 @@
 				} else {
 					p.signal.send('message', message.value);
 				}
-				addMessage((!!peer) ? name + ' to ' + peer : name + ' to all', message.value);
+				addMessage((!!peer) ? name + ' to ' + peer : name + ' to all peers', message.value);
 				message.value = '';
 			}
 			
@@ -250,13 +251,16 @@
 	</script>
 
 </head><body>
-
-	<h1>Xirsys XSDK: WebRTC Example</h1>
-	<section>
-		<form id="login" class="box">
-			Username: <input type="text" id="username" placeholder="enter a username" />
-			<button id="login-btn" type="submit">connect</button>
-		</form>
+	<section class="major-box">
+		<h2>Remote video</h2>
+		<video autoplay="autoplay" id="remote-video"></video>
+	</section>
+	<section class="minor-box">
+		<h2>Local video</h2>
+		<video autoplay="autoplay" id="local-video" muted="true"></video>
+	</section>
+	<section class="vertical-bar">
+		<h1>Xirsys XSDK: WebRTC Example</h1>
 		<div class="box">
 			Your username: <strong><span id="username-label"></span></strong>
 		</div>
@@ -269,22 +273,21 @@
 			</div> 
 		</div>
 	</section>
-	<section>
+	<section class="horizontal-bar">
 		<div id="messages" class="box">
-			<h2>Conversation thread</h2>
+			<h2>Conversation thread:</h2>
 		</div>
 		<form id="sendMessage" class="message box">
 			New message: <input type="text" id="message" />
 			<button type="submit">Send</button>
 		</form>
 	</section>
-	<section>
-		<div id="lVideo" class="video-container box">
-			<video autoplay="autoplay" id="local-video" muted="true"></video>
-		</div>
-		<div id="rVideo" class="video-container box">
-			<video autoplay="autoplay" id="remote-video"></video>
-		</div>
+	<section class="cover">
+		<form id="login">
+			<h2>Username:</h2>
+			<input type="text" id="username" placeholder="enter a username" />
+			<button id="login-btn" type="submit">connect</button>
+		</form>
 	</section>
 
 </body></html>
