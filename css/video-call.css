@@ -1,6 +1,6 @@
-body {
-	font-family: arial, verdana;
+div#xsdk-video-call {
 	font-size: 14px;
+	font-family: -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", "Ubuntu", sans-serif;
 }
 
 h1 {
@@ -18,13 +18,11 @@ section {
 	box-sizing: border-box;
 	vertical-align: text-top;
 	border: 0;
-	border-radius: 2px;
 	padding: 10px;
-	background: white;
-	box-shadow: inset 1px 2px 4px grey;
-}
-
-.box {
+	color: WindowText;
+	background: Window;
+	box-shadow: inset 0px 0px 2px ThreeDShadow;
+	text-shadow: 1px 1px 1px white;
 }
 
 section.cover {
@@ -32,22 +30,21 @@ section.cover {
 	top: 0%;
 	width: 100%;
 	height: 100%;
-	border-radius: 0;
 	background: rgba(0,0,0,0.5);
 }
 
-section.cover form {
-	position: relative;
-	left: 50%;
-	top: 50%;
-	width: 200px;
-	height: 100px;
-	margin-left: -110px;
-	margin-top: -60px;
-	padding: 10px;
-	border-radius: 4px;
-	background: rgba(255,255,255,0.5);
-}
+	section.cover form {
+		position: relative;
+		left: 50%;
+		top: 50%;
+		width: 200px;
+		height: 100px;
+		margin-left: -110px;
+		margin-top: -60px;
+		padding: 10px;
+		background: Window;
+		box-shadow: 0px 0px 2px black;
+	}
 
 section.vertical-bar {
 	left: 0%;
@@ -105,15 +102,22 @@ video {
 	height: 100%;
 }
 
-.peer {
-	position: relative;
-	margin: 0 0 7px 0;
+button {
+	background: ButtonFace;
 }
 
-.peer button {
-	position: absolute;
-	right: 10px;
+#peers {
+	margin-top: 20px;
 }
+
+	#peers h2, #peers button {
+		float: left;
+		margin-right: 10px;
+	}
+
+	.peer {
+		clear: left;
+	}
 
 .hidden {
 	display: none;
