@@ -30,7 +30,9 @@
 			var callPeer = document.getElementById('call-peer'),
 				hangUp = document.getElementById('hang-up'),
 				localVideo = document.getElementById('local-video'),
-				remoteVideo = document.getElementById('remote-video');
+				remoteVideo = document.getElementById('remote-video'),
+				localFullScreen = document.getElementById('local-full-screen'),
+				remoteFullScreen = document.getElementById('remote-full-screen');
 			
 			// Settings for video calling.
   			var useAudio = true,
@@ -146,6 +148,19 @@
 					( '0' + t.getSeconds() ).slice( -2 );
 			};
 			
+			// Full-screens any HTML5 video on the page.
+			var fullScreenVideo = function ($video) {
+				if ($video.requestFullscreen) {
+					$video.requestFullscreen();
+				} else if ($video.webkitRequestFullscreen) {
+					$video.webkitRequestFullscreen();
+				} else if ($video.mozRequestFullScreen) {
+					$video.mozRequestFullScreen();
+				} else if ($video.msRequestFullscreen) {
+					$video.msRequestFullscreen();
+				}
+			}
+			
 				/* Handlers for the user interface */
 
 			// When the connect button is clicked hide log-in, check the user-
@@ -210,6 +225,14 @@
 				// See 'callPeer.onclick' above for similar.
 			}
 			
+			localFullScreen.onclick = function ($evt) {
+				fullScreenVideo(localVideo);
+			}
+			
+			remoteFullScreen.onclick = function ($evt) {
+				fullScreenVideo(remoteVideo);
+			}
+			
 				/* Watching for and responding to XSDK events */
 			
 			// Triggered on login. There may be zero to many peers at this time.
@@ -256,10 +279,12 @@
 		<section class="major-box">
 			<h2>Remote video</h2>
 			<video autoplay="autoplay" id="remote-video"></video>
+			<input type="image" src="../images/full-screen.png" id="remote-full-screen" alt="Go full screen" title="Go full screen" height="20" width="20">
 		</section>
 		<section class="minor-box">
 			<h2>Local video</h2>
 			<video autoplay="autoplay" id="local-video" muted="true"></video>
+			<input type="image" src="../images/full-screen.png" id="local-full-screen" alt="Go full screen" title="Go full screen" height="20" width="20">
 		</section>
 		<section class="vertical-bar">
 			<h1>Xirsys XSDK: WebRTC Example</h1>
