@@ -18,8 +18,10 @@
 				message = document.getElementById("message"),
 				messages = document.getElementById("messages"),
 				login = document.getElementById("login"),
+				login_btn = document.getElementById('login-btn'),
 				username = document.getElementById("username"),
-				name = "";
+				name = "",
+				state = 0;
 
 			// Create a signal object.
 			var s = new $xirsys.signal((xirsysConnect.secureTokenRetrieval === true) ? xirsysConnect.server : null);
@@ -27,15 +29,22 @@
 			// When the connect button is clicked...
 			login.onsubmit = function ($event) {
 				$event.preventDefault();
-				document.getElementById('login-btn').style.visibility = 'hidden';
-				// Make the username valid.
-				name = username.value.replace(/\W+/g, "");
-				if (!name || name == "") {
-					return;
+				if (state == 0) {
+					login_btn.childNodes[0].nodeValue = "disconnect";
+					// Make the username valid.
+					name = username.value.replace(/\W+/g, "");
+					if (!name || name == "") {
+						return;
+					}
+					var connectionProperties = xirsysConnect.data;
+					connectionProperties.username = name;
+					s.connect(connectionProperties);
+					state = 1;
+				} else {
+					s.close();
+					login_btn.childNodes[0].nodeValue = "connect";
+					state = 0;
 				}
-				var connectionProperties = xirsysConnect.data;
-				connectionProperties.username = name;
-				s.connect(connectionProperties);
 			}
 
 			// Peer connected helper function (UI only).
