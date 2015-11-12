@@ -192,7 +192,7 @@
 				} else {
 					p.signal.send('message', message.value);
 				}
-				addMessage((!!peer) ? name + ' to ' + peer : name + ' to all peers', message.value);
+				addMessage((!!peer) ? 'To ' + peer : name + 'To all peers', message.value);
 				message.value = '';
 			}
 			
@@ -255,7 +255,7 @@
 			// When a peer sends you (or you and all other peers) a message.
 			$xirsys.events.getInstance().on($xirsys.signal.message, function ($evt, $msg) {
 				if ($msg.sender != name) {
-					addMessage(stripLeaf($msg.sender), $msg.data);
+					addMessage('From ' + stripLeaf($msg.sender), $msg.data);
 				}
 			});
 			
