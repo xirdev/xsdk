@@ -18,7 +18,7 @@ var xirsysConnect = {
 /*var xirsysConnect = {
 	secureTokenRetrieval : true,
 	server : '../getToken.php',
-	info : {
+	data : {
 		domain : '< www.yourdomain.com >',
 		application : 'default',
 		room : 'default',
