@@ -18,7 +18,6 @@
 			// Getting references to page DOM for signalling.
 			var peersEl = document.getElementById('peers'),
 				loginEl = document.getElementById('login'),
-				logOutEl = document.getElementById('log-out'),
 				usernameEl = document.getElementById('username'),
   				usernameLabelEl = document.getElementById('username-label'),
 				messageEl = document.getElementById('message'),
@@ -61,28 +60,11 @@
 				if (!username || username == '') {
 					return;
 				}
-				loginEl.parentNode.style.visibility = 'hidden';
-				logOutEl.style.visibility = 'visible';
+				login.parentNode.style.visibility = 'hidden';
 				var connectionProperties = xirsysConnect.data;
 				connectionProperties.username = username;
 				connectionProperties.automaticAnswer = automaticAnswer;
 				p.open(connectionProperties);
-			}
-			
-			// Log out and reset the interface.
-			logOutEl.onclick = function ($event) {
-				$event.preventDefault();
-				username = '';
-				while (usernameLabelEl.hasChildNodes()) {
-					usernameLabelEl.removeChild(usernameLabelEl.lastChild);
-				}
-				usernameLabelEl.appendChild(document.createTextNode('[Not logged in]'));
-				login.parentNode.style.visibility = 'visible';
-				logOutEl.style.visibility = 'hidden';
-				removeAllPeers();
-				p.hangUp();
-				detachMediaStream(localVideoEl);
-				p.close();
 			}
 			
 			// Send a message to one or all peers.
@@ -169,20 +151,6 @@
 			var removePeer = function ($peerName) {
 				var nodeEl = document.getElementById('peer-' + $peerName);
 				peersEl.removeChild(nodeEl);
-			};
-			
-			// For resetting the peers list, leaving the __all__ selector only.
-			var removeAllPeers = function () {
-				var selectors = peersEl.getElementsByTagName('div'),
-					peerSelectors = [];
-				for (var i = 0; i < selectors.length; i++) {
-				   	if (selectors[i].className.indexOf('peer') !== -1) {
-						peerSelectors.push(selectors[i]);
-					}
-				}
-				for (var i = 0; i < peerSelectors.length; i++) {
-					peersEl.removeChild(peerSelectors[i]);
-				}
 			};
 			
 			// Get the name of the peer the user has selected.
@@ -320,12 +288,12 @@
 		<section class="vertical-bar">
 			<h1>Xirsys XSDK: WebRTC Example</h1>
 			<div class="box">
-				<strong>Your username:</strong> <span id="username-label">[Not logged in]</span> <button id="log-out" style="visibility:hidden">Log out</button>
+				<strong>Your username:</strong> <span id="username-label">[Not logged in]</span>
 			</div>
 			<div id="peers">
 				<h2>Peers:</h2>
 				<button id="call-peer">Call</button><button id="hang-up">Hang up</button><br><br>
-				<div>
+				<div class="peer">
 					<input type="radio" name="peer" value="__all__" checked="checked"/>
 					[All peers]
 				</div> 

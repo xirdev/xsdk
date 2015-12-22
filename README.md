@@ -3,10 +3,15 @@ xsdk
 
 This repository contains simple examples for the new XirSys platform.  Each of the examples are created to make it easier to use and understand the XirSys API. Eventually, this repo will house the public SDK for XirSys.
 
-The SDK and demos are still in active development. At present the Signal and SimpleWebRTC demos are up to date and functional examples of the Xirsys platform. The other demos will be brought up to speed and added to this repository soon. We will also greatly expand documentation over the coming months.
+The SDK and demos are still in active development. At present the Signal and SimpleWebRTC demos are up to date and functional examples of the Xirsys platform. The other demos will be brought up to speed and added to this repository soon. 
+
+To get started we recommend reading the WebRTC Walkthrough documentation.
 
 Changes
 -------
+
+##### 22/12/2015
+All demos have been updated over the last six months. A walkthrough guide has been added.
 
 ##### 23/06/2015
 Removed non-working demos for now, leaving only signalling and SimpleWebRTC demos. Other demos will be added back to this repo shortly.

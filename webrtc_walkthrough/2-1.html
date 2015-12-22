@@ -5,8 +5,6 @@
 	<script src="xirsys_connect.js"></script>
 	<script src="../lib/xirsys.core.js"></script>
 	<script src="../lib/xirsys.signal.js"></script>
-	<script src="../lib/xirsys.api.js"></script>
-	<script src="../lib/xirsys.p2p.adapter.js"></script>
 	<script src="../lib/xirsys.p2p.js"></script>
 
 	<script>
@@ -18,22 +16,11 @@
 			// Getting references to page DOM for signalling.
 			var peersEl = document.getElementById('peers'),
 				loginEl = document.getElementById('login'),
-				logOutEl = document.getElementById('log-out'),
 				usernameEl = document.getElementById('username'),
   				usernameLabelEl = document.getElementById('username-label'),
 				messageEl = document.getElementById('message'),
 				sendMessageEl = document.getElementById('sendMessage'),
 				messagesEl = document.getElementById('messages');
-				
-			// Getting references to page DOM for video calling.
-			var callPeerEl = document.getElementById('call-peer'),
-				hangUpEl = document.getElementById('hang-up'),
-				localVideoEl = document.getElementById('local-video'),
-				remoteVideoEl = document.getElementById('remote-video'),
-				localFullScreenEl = document.getElementById('local-full-screen'),
-				remoteFullScreenEl = document.getElementById('remote-full-screen');
-				
-			var automaticAnswer = false;
 		
 			// Create a p2p object. Pass a proxy server with your ident and
 			// secret if you intend to connect securely.// Settings for video calling.
@@ -41,11 +28,9 @@
 				(xirsysConnect.secureTokenRetrieval === true) ? 
 					xirsysConnect.server : null,
 				{
-					audio: true, 
-					video: true
-				},
-				localVideoEl,
-				remoteVideoEl
+					audio: false, 
+					video: false
+				}
 			);
 			
 			var username = '';
@@ -61,28 +46,10 @@
 				if (!username || username == '') {
 					return;
 				}
-				loginEl.parentNode.style.visibility = 'hidden';
-				logOutEl.style.visibility = 'visible';
+				login.parentNode.style.visibility = 'hidden';
 				var connectionProperties = xirsysConnect.data;
 				connectionProperties.username = username;
-				connectionProperties.automaticAnswer = automaticAnswer;
 				p.open(connectionProperties);
-			}
-			
-			// Log out and reset the interface.
-			logOutEl.onclick = function ($event) {
-				$event.preventDefault();
-				username = '';
-				while (usernameLabelEl.hasChildNodes()) {
-					usernameLabelEl.removeChild(usernameLabelEl.lastChild);
-				}
-				usernameLabelEl.appendChild(document.createTextNode('[Not logged in]'));
-				login.parentNode.style.visibility = 'visible';
-				logOutEl.style.visibility = 'hidden';
-				removeAllPeers();
-				p.hangUp();
-				detachMediaStream(localVideoEl);
-				p.close();
 			}
 			
 			// Send a message to one or all peers.
@@ -100,42 +67,6 @@
 				}
 				addMessage((!!peer) ? 'To ' + peer : 'To all peers', messageEl.value);
 				messageEl.value = '';
-			}
-			
-			// Initiates a call, if a single peer has been selected.
-			callPeerEl.onclick = function () {
-				var peerName = selectedPeer();
-				if (!!peerName) {
-					p.call(peerName);
-					addMessage('Calling ' + peerName);
-					// N.B. This demo doesn't include a method for noting
-					// rejected calls. This could be added in the demo by
-					// sending a message when rejecting the call, but it would
-					// be preferable to extend the xirsys.p2p class to
-					// automatically emit an event to the same effect.
-				} else {
-					addMessage('Error', 'You must select a single peer before initiating a call');
-				}
-			}
-			
-			// Ends current call, if any.
-			hangUpEl.onclick = function () {
-				p.hangUp();
-				//addMessage('Hanging up');
-				// N.B. As this function is 'dumb' (in that it doesn't need to 
-				// know if we are in a call as that is handled by the p2p class)
-				// it is not appropriate to add a message. 
-				// This demo also does not include a method for noting calls
-				// ended by the other party or by connexion difficulties.
-				// See 'callPeer.onclick' above for similar.
-			}
-			
-			// Requesting full screen.
-			localFullScreenEl.onclick = function ($evt) {
-				fullScreenVideo(localVideoEl);
-			}
-			remoteFullScreenEl.onclick = function ($evt) {
-				fullScreenVideo(remoteVideoEl);
 			}
 			
 				/* Other interface functions */
@@ -169,20 +100,6 @@
 			var removePeer = function ($peerName) {
 				var nodeEl = document.getElementById('peer-' + $peerName);
 				peersEl.removeChild(nodeEl);
-			};
-			
-			// For resetting the peers list, leaving the __all__ selector only.
-			var removeAllPeers = function () {
-				var selectors = peersEl.getElementsByTagName('div'),
-					peerSelectors = [];
-				for (var i = 0; i < selectors.length; i++) {
-				   	if (selectors[i].className.indexOf('peer') !== -1) {
-						peerSelectors.push(selectors[i]);
-					}
-				}
-				for (var i = 0; i < peerSelectors.length; i++) {
-					peersEl.removeChild(peerSelectors[i]);
-				}
 			};
 			
 			// Get the name of the peer the user has selected.
@@ -226,36 +143,6 @@
 					( '0' + t.getSeconds() ).slice( -2 );
 			};
 			
-			// Deal with an incoming call.
-			// If you've turned off automatic responses then listen to call
-			// offers and allow the user to decide whether to respond or not.
-			// Else calls are automatically answered (see xirsys.p2p.js).
-			var callIncoming = function ($peer, $data) {
-				if (automaticAnswer === false) {
-					if (confirm('Take a call from ' + $peer + '?')) {
-						p.answer($peer, $data);
-						addMessage('Taking a call from ' + $peer);
-					} else {
-						addMessage('Call from ' + $peer + ' rejected');
-					}
-				} else {
-					addMessage('Taking a call from ' + $peer);
-				}
-			}
-			
-			// Full-screens any HTML5 video on the page.
-			var fullScreenVideo = function ($video) {
-				if ($video.requestFullscreen) {
-					$video.requestFullscreen();
-				} else if ($video.webkitRequestFullscreen) {
-					$video.webkitRequestFullscreen();
-				} else if ($video.mozRequestFullScreen) {
-					$video.mozRequestFullScreen();
-				} else if ($video.msRequestFullscreen) {
-					$video.msRequestFullscreen();
-				}
-			}
-			
 				/* Watching for and responding to XSDK events */
 			
 			var events = $xirsys.events.getInstance();
@@ -285,17 +172,6 @@
 					addMessage('From ' + stripLeaf($msg.sender), $msg.data);
 				}
 			});
-			
-			// When a peer offers you a connexion for a video call.
-			events.on($xirsys.p2p.offer, function ($evt, $peer, $data) {
-				callIncoming($peer, $data);
-			});
-			
-			// Log errors in the terminal.
-			events.on($xirsys.signal.error, function ($evt, $msg) {
-				console.error('error: ', $msg);
-				addMessage('Error', 'There has been an error in the server connection');
-			});
 
 		}
 
@@ -305,27 +181,14 @@
 
 	<div id="xsdk-video-call">
 	
-		<section class="major-box">
-			<h2>Remote video</h2>
-			<video autoplay="autoplay" id="remote-video"></video>
-			<input type="image" src="../images/full-screen.png" id="remote-full-screen" alt="Go full screen" title="Go full screen" height="20" width="20">
-		</section>
-		
-		<section class="minor-box">
-			<h2>Local video</h2>
-			<video autoplay="autoplay" id="local-video" muted="true"></video>
-			<input type="image" src="../images/full-screen.png" id="local-full-screen" alt="Go full screen" title="Go full screen" height="20" width="20">
-		</section>
-	
 		<section class="vertical-bar">
 			<h1>Xirsys XSDK: WebRTC Example</h1>
 			<div class="box">
-				<strong>Your username:</strong> <span id="username-label">[Not logged in]</span> <button id="log-out" style="visibility:hidden">Log out</button>
+				<strong>Your username:</strong> <span id="username-label">[Not logged in]</span>
 			</div>
 			<div id="peers">
 				<h2>Peers:</h2>
-				<button id="call-peer">Call</button><button id="hang-up">Hang up</button><br><br>
-				<div>
+				<div class="peer">
 					<input type="radio" name="peer" value="__all__" checked="checked"/>
 					[All peers]
 				</div> 
@@ -349,7 +212,7 @@
 				<button id="login-btn" type="submit">Connect</button>
 			</form>
 		</section>
-		
+	
 	</div>
 
 </body></html>

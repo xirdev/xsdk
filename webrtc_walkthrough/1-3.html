@@ -1,0 +1,63 @@
+<!DOCTYPE><html><head>
+
+	<title>Xirsys XSDK: WebRTC Example</title>
+	<link rel="stylesheet" type="text/css" href="../css/video-call.css"></link>
+	<script src="../lib/xirsys.core.js"></script>
+	<script src="../lib/xirsys.signal.js"></script>
+
+	<script>
+	
+		'use strict';
+
+		window.onload = function () {
+		
+			// Create a signal object. Pass a proxy server with your ident and
+			// secret if you intend to connect securely.
+			var s = new $xirsys.signal();
+			
+			var username = 'terry-tibs-' + new Date().getTime();
+			
+			// Connect to the signalling server insecurely.
+			s.connect( {
+				domain : '< www.yourdomain.com >',
+				application : 'default',
+				room : 'default',
+				ident : '< Your username (not your email) >',
+				secret : '< Your secret API token >',
+				secure : 1,
+				username : username
+			} );
+			
+				/* Watching for and responding to XSDK events */
+			
+			var events = $xirsys.events.getInstance();
+			
+			// We get this when we login. There may be zero
+			// to many peers at this time.
+			events.on($xirsys.signal.peers, function ($evt, $msg) {
+				var peersList = 'Peers currently online: ';
+				for (var i = 0; i < $msg.users.length; i++) {
+					peersList = peersList + $msg.users[i] + ' / ';
+				}
+				alert(peersList);
+			});
+			
+			// When a peer connects to signalling, we
+			// get notified here.
+			events.on($xirsys.signal.peerConnected, function ($evt, $msg) {
+				if ($msg !== username) {
+					alert('New peer online: ' + $msg);
+				}
+			});
+
+		}
+
+	</script>
+
+</head><body>
+
+	<div id="xsdk-video-call">
+	</div>
+	
+</body></html>
+

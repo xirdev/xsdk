@@ -1,0 +1,135 @@
+<!DOCTYPE><html><head>
+
+	<title>Xirsys XSDK: WebRTC Example</title>
+	<link rel="stylesheet" type="text/css" href="../css/video-call.css"></link>
+	<script src="xirsys_connect.js"></script>
+	<script src="../lib/xirsys.core.js"></script>
+	<script src="../lib/xirsys.signal.js"></script>
+
+	<script>
+	
+		'use strict';
+
+		window.onload = function () {
+		
+			// Getting references to page DOM for signalling.
+			var peersEl = document.getElementById('peers'),
+				loginEl = document.getElementById('login'),
+				usernameEl = document.getElementById('username'),
+  				usernameLabelEl = document.getElementById('username-label');
+		
+			// Create a signal object. Pass a proxy server with your ident and
+			// secret if you intend to connect securely.
+			var s = new $xirsys.signal(
+				(xirsysConnect.secureTokenRetrieval === true) ? 
+					xirsysConnect.server : null
+			);
+			
+			var username = '';
+			
+				/* User interface handler functions */
+			
+			// When the connect button is clicked hide log-in, check the user-
+			// name is valid, cancel automatic answers (see xirsys.p2p.js
+			// onSignalMessage method) and open a connexion to the server.
+			loginEl.onsubmit = function ($event) {
+				$event.preventDefault();
+				username = usernameEl.value.replace(/\W+/g, '');
+				if (!username || username == '') {
+					return;
+				}
+				login.parentNode.style.visibility = 'hidden';
+				var connectionProperties = xirsysConnect.data;
+				connectionProperties.username = username;
+				s.connect(connectionProperties);
+			}
+				/* Other interface functions */
+			
+			// When a peer connects check to see if it is the user. If it is 
+			// update the user's label element. If it is not check if the peer
+			// is already listed and add an element if not.s
+			var addPeer = function ($peerName) {
+				if ($peerName == username) {
+					while (usernameLabelEl.hasChildNodes()) {
+						usernameLabelEl.removeChild(usernameLabelEl.lastChild);
+					}
+					usernameLabelEl.appendChild(document.createTextNode(stripLeaf($peerName)));
+				} else {
+					if (!document.getElementById('peer-' + $peerName)) {
+						var nodeEl = document.createElement('div');
+						nodeEl.appendChild(document.createTextNode(stripLeaf($peerName)));
+						nodeEl.id = 'peer-' + $peerName;
+						nodeEl.className = 'peer';
+						peersEl.appendChild(nodeEl);
+					}
+				}
+			};
+			
+			// Removes peer elements from the page when a peer leaves.
+			var removePeer = function ($peerName) {
+				var nodeEl = document.getElementById('peer-' + $peerName);
+				peersEl.removeChild(nodeEl);
+			};
+			
+			// Returns a peer name without the room and application details.
+			// This function may now be redundant as the format of messages from
+			// the Xirsys server has changed.
+			var stripLeaf = function ($p) {
+				return $p.substr($p.lastIndexOf('/')+1)
+			};
+			
+				/* Watching for and responding to XSDK events */
+			
+			var events = $xirsys.events.getInstance();
+			
+			// We get this when we login. There may be zero
+			// to many peers at this time.
+			events.on($xirsys.signal.peers, function ($evt, $msg) {
+				for (var i = 0; i < $msg.users.length; i++) {
+					addPeer($msg.users[i]);
+				}
+			});
+			
+			// When a peer connects to signalling, we
+			// get notified here.
+			events.on($xirsys.signal.peerConnected, function ($evt, $msg) {
+				addPeer($msg);
+			});
+			
+			// When a peer disconnects from the signal server we get notified.
+			events.on($xirsys.signal.peerRemoved, function ($evt, $msg) {
+				removePeer($msg);
+			});
+
+		}
+
+	</script>
+
+</head><body>
+
+	<div id="xsdk-video-call">
+
+		<section class="vertical-bar">
+			<h1>Xirsys XSDK: WebRTC Example</h1>
+			<div class="box">
+				<strong>Your username:</strong> <span id="username-label">[Not logged in]</span>
+			</div>
+			<div id="peers">
+				<h2>Peers:</h2>
+				<div class="peer">
+				</div> 
+			</div>
+		</section>
+		
+		<section class="cover">
+			<form id="login">
+				<h2>Username:</h2>
+				<input type="text" id="username" placeholder="enter a username" />
+				<button id="login-btn" type="submit">Connect</button>
+			</form>
+		</section>
+
+	</div>
+
+</body></html>
+

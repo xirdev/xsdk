@@ -1,0 +1,1435 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass book
+\use_default_options true
+\begin_modules
+theorems-ams
+eqs-within-sections
+figs-within-sections
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman GaramondNo8
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts true
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 2.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Xirsys' XSDK Walkthrough:
+\begin_inset Newline newline
+\end_inset
+
+Creating a WebRTC video chat application
+\end_layout
+
+\begin_layout Author
+Ed Rogers, Xirsys
+\end_layout
+
+\begin_layout Chapter*
+Introduction
+\end_layout
+
+\begin_layout Standard
+Welcome to XSDK; a public Javascript SDK for exploiting the power of the
+ Xirsys platform.
+\end_layout
+
+\begin_layout Standard
+XSDK is intended for use by Xirsys customers who have already familiarised
+ themselves with at least the basic features of the Xirsys platform.
+ Please read the following sources before this documentation;
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset href
+LatexCommand href
+target "http://xirsys.com/developers/"
+
+\end_inset
+
+ and
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset href
+LatexCommand href
+name "XirSys_v2_Platform_Documentation.pdf"
+target "https://github.com/xirdev/xsdk/blob/master/docs/XirSys_v2_Platform_Documentation.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This document will walk you through the process of building a full client-side
+ WebRTC application for web browsers.
+ You follow the progress through sequential HTML files in 
+\emph on
+/webrtc_walkthough/
+\emph default
+.
+ The final file will mirror 
+\emph on
+/examples/webrtc.html
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+It is not our purpose here to explain WebRTC itself.
+ For that we recommend 
+\begin_inset CommandInset href
+LatexCommand href
+name "WebRTC for Beginners by Muaz Khan"
+target "https://www.webrtc-experiment.com/docs/webrtc-for-beginners.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The XSDK is still developing, as is this documentation.
+ If you would like clarification or assistance please pose us a question
+ on 
+\begin_inset CommandInset href
+LatexCommand href
+name "Stack Overflow"
+target "http://stackoverflow.com/search?q=xirsys"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Signalling
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Starting a new web application"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/1-1.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lets start with a bare web page (
+\emph on
+webrtc_walkthrough/1-1.html
+\emph default
+).
+ We will not concern ourselves here with presentation, so we're using a
+ premade stylesheet.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-1-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Connecting to the signal server"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/1-2.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first step is to add a connection to the Xirsys signalling server, which
+ is made by 
+\emph on
+/lib/signal.js
+\emph default
+ (all XSDK applications will also require 
+\emph on
+/lib/core.js
+\emph default
+).
+ If we look in 
+\emph on
+signal.js
+\emph default
+ you will note that the XSDK uses a custom class system.
+ Skip the 
+\emph on
+socket
+\emph default
+ class in that file for now and study the 
+\emph on
+signal
+\emph default
+ class further down the page.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-2-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You will need to instantiate a new signal object in the application and
+ then call 
+\emph on
+connect
+\emph default
+ on it to form a connection with the server.
+ As you will know after reading the developer information on the Xirsys
+ website there are insecure and secure ways of connecting to the Xirsys
+ server.
+ In short; in order to form a connection you need get get a token from the
+ server, which requires passing over the confidential 
+\emph on
+ident
+\emph default
+ and 
+\emph on
+secret
+\emph default
+ associated with your Xirsys account.
+ It is best to use a proxy to do this, such as a PHP script acting as a
+ go-between which stores the confidential information, forwarding and returning
+ AJAX requests without having your 
+\emph on
+ident
+\emph default
+ or 
+\emph on
+secret
+\emph default
+ exposed in Javascript.
+ To use such a proxy you will need to pass the URL when instantiating the
+ object.
+ However in the interests of simplicity we will by-pass this security in
+ this walkthrough.
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+connect
+\emph default
+ method will call either the Xirsys server or your proxy (if specified)
+ to get a token that authorises further communication.
+ So unless you have a proxy you need to pass the 
+\emph on
+ident
+\emph default
+ and 
+\emph on
+secret
+\emph default
+ values.
+ It also needs a 
+\emph on
+domain
+\emph default
+, 
+\emph on
+application
+\emph default
+, 
+\emph on
+room
+\emph default
+ and 
+\emph on
+username
+\emph default
+, which the class uses to send messages, and 
+\emph on
+secure
+\emph default
+ for chosing between port 80 and 443.
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://xirsys.com/guide"
+
+\end_inset
+
+.
+ To start with we will pass it a arbitrary name.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-2-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this point we have successfully connected to the signalling server and
+ can pass messages back and forth.
+ 
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Reacting to events"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/1-3.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Xirsys signalling server sends a few different message types via web
+ sockets.
+ In the 
+\emph on
+signal
+\emph default
+ class these messages are handled by the 
+\emph on
+handleService
+\emph default
+ and 
+\emph on
+handleUserService
+\emph default
+ methods.
+ These in turn call other methods for each message type; 
+\emph on
+onPeers
+\emph default
+, 
+\emph on
+onPeerConnected
+\emph default
+, 
+\emph on
+onPeerRemoved
+\emph default
+ and 
+\emph on
+onMessage
+\emph default
+ (for generic messages).
+ Each of these emits an event through the XSDK's own events handler class.
+ This also happens when the connection to the signalling server is opened,
+ closed, disconnected or generates an error (
+\emph on
+onOpen
+\emph default
+, 
+\emph on
+onClose
+\emph default
+, 
+\emph on
+onDisconnect
+\emph default
+ and 
+\emph on
+onError
+\emph default
+, respectively).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-3-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+events
+\emph default
+ class is in 
+\emph on
+/lib/xirsys.core.js
+\emph default
+.
+ Its methods should be fairly self explanatory.
+ Please note that events can include segments and wildcards, meaning you
+ can for example listen to all events related to signalling, though in this
+ instance we are listening for specific events only.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-3-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The events in question are strings defined as statics of the 
+\emph on
+signal
+\emph default
+ class.
+ So in the application we will create two event listeners for the 
+\emph on
+signalling.peers
+\emph default
+ and 
+\emph on
+signalling.peersConnected
+\emph default
+ events.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-3-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For now it suffices to alert the user to their peers occupying the same
+ domain, application and room as them with a pop-up.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-3-4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Keeping connection and account info seperate"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/1-4.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lets move the 
+\emph on
+ident
+\emph default
+, 
+\emph on
+secret
+\emph default
+ and other connection information into their own file: 
+\emph on
+./xirsys_connect.js
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-4-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This will make it easier to maintain your applications, especially if you
+ want to run multiple applications on the same Xirsys account or switch
+ back and forth from passing the 
+\emph on
+ident
+\emph default
+ and 
+\emph on
+secret
+\emph default
+ via Javascript for testing, to using a proxy server in anger.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-4-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "An updating list of peers"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/1-5.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Time to add some HTML.
+ 
+\end_layout
+
+\begin_layout Standard
+We'll start by asking the user to choose a valid username for themselves
+ in a pop-up log-in form before making the connection with the signalling
+ server.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-5-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-5-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then we'll maintain a list of peers by adding another event listener (
+\emph on
+peerRemoved
+\emph default
+) and use the three events to manipulate the DOM.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-5-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-5-4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Chat between peers"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/1-6.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this point lets introduce some actual functionality: a chat room.
+ 
+\end_layout
+
+\begin_layout Standard
+The Xirsys signalling server can send messages to all peers or to an individual
+ peer.
+ To make use of this the user will need to be able to choose from the peers
+ list, which we will do by adding an `all peers' option and associating
+ each peer with a radio button.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-6-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we'll add a second form to the application, this one for sending messages,
+ and handle its input with a function which calls the `send' method of the
+ 
+\emph on
+signal
+\emph default
+ class.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-6-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-6-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You will note that this method takes four arguments: 
+\emph on
+$event
+\emph default
+, 
+\emph on
+$data
+\emph default
+, 
+\emph on
+$targetUser
+\emph default
+ and 
+\emph on
+$type
+\emph default
+.
+ The last two are optional.
+ If no 
+\emph on
+$targetUser
+\emph default
+ is specified the signalling server will send the message to all peers.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-6-4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Receiving such messages requires another event listener, more DOM manipulation
+ and few extra touches like time stamps to make it feel like a proper chat
+ room.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-6-5.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-6-6.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/1-6-7.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Please note that the Xirsys signalling server only acts as a conduit and
+ as such does not store messages.
+\end_layout
+
+\begin_layout Chapter
+WebRTC Video
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Introducing the p2p class"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/2-1.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Assuming you are using the default stylesheet you couldn't fail to notice
+ that by now, although you have a fully-functional chat room application,
+ there is a large hole on the top right of the screen.
+ This we shall now endeavour to fill.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-1-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+But before adding any functionality we'll convert what we've done so far
+ to use the 
+\emph on
+p2p
+\emph default
+ class from 
+\emph on
+/lib/xirsys.p2p.js
+\emph default
+, rather than the 
+\emph on
+signal
+\emph default
+ class.
+ The former relies upon the latter and exposes an instance of it as a property,
+ which we shall use in our application.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-1-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Unlike the 
+\emph on
+signal
+\emph default
+ class, instantiating 
+\emph on
+p2p
+\emph default
+ requires a second argument (
+\emph on
+$config
+\emph default
+).
+ For now we will use this argument to tell the instance not to try and attach
+ video and audio feeds (by default it attempts to do this).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-1-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+p2p
+\emph default
+ class' 
+\emph on
+open
+\emph default
+ method creates an instance of the 
+\emph on
+signal
+\emph default
+ class, binds its own methods to the instance's web socket events and calls
+ 
+\emph on
+connect
+\emph default
+ on it.
+ There is also a second argument (
+\emph on
+$autoreply
+\emph default
+) which we will come to later.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-1-4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-1-5.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There is no need to update the event listeners we have in place so far as
+ they will all still be coming through with the 
+\emph on
+signalling
+\emph default
+ prefix.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Taking calls"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/2-2.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The next step is to introduce the capacity for users to take calls from
+ other peers.
+ This requires the 
+\emph on
+/lib/xirsys.api.js
+\emph default
+ and 
+\emph on
+/lib/xirsys.p2p.adapter.js
+\emph default
+ scripts.
+ By default the 
+\emph on
+p2p 
+\emph default
+class will automatically answer calls, so we need to modify the 
+\emph on
+connectionProperties 
+\emph default
+object to cancel this behaviour.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-2-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-2-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-2-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Incoming calls cause 
+\emph on
+offer
+\emph default
+ events, which we will listen to and present to the user as a confirmation
+ pop-up.
+ If the user accepts the offer then the 
+\emph on
+answer
+\emph default
+ method of the 
+\emph on
+p2p
+\emph default
+ class will call 
+\emph on
+createAnswer
+\emph default
+ on the instance's 
+\emph on
+peerConn
+\emph default
+ property.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-2-4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+peerConn
+\emph default
+ property is set once the ICE servers information has been received (see
+ 
+\emph on
+onIceServers
+\emph default
+ in the 
+\emph on
+p2p
+\emph default
+ class and 
+\emph on
+getIceServers
+\emph default
+ in the 
+\emph on
+api
+\emph default
+ class), when it is defined as an instance of 
+\emph on
+RTCPeerConnection
+\emph default
+.
+ The 
+\emph on
+/lib/xirsys.p2p.adapter.js
+\emph default
+ script will have already ensured cross-browser compatibility for this and
+ other WebRTC methods which are not yet stable standards.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-2-5.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-2-6.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Making calls"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/2-3.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Having built the receiver, we need a dialler.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-3-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-3-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-3-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When a user calls the peer they have selected from the list the 
+\emph on
+call 
+\emph default
+method of 
+\emph on
+p2p 
+\emph default
+forms a peer connection with the 
+\emph on
+doPeerConnection 
+\emph default
+method.
+ When the connection is made an offer is sent to the peer in question, and
+ received via the event listener described above.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-3-4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-3-5.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+hangUp 
+\emph default
+method simply closes the peer connection, if there is one.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-3-6.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Lights, camera, WebRTC"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/2-4.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you attempted to run the application at the last stage you will have
+ noted that no offer was, in fact, made.
+ The WebRTC API requires a stream or data channel to be associated with
+ the offer, otherwise it cannot be created.
+ 
+\end_layout
+
+\begin_layout Standard
+So lets add some media streams; one video element for local streams, and
+ one for remote streams.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-4-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Send references to them when instantiating 
+\emph on
+p2p 
+\emph default
+and the 
+\emph on
+attachMediaStream 
+\emph default
+function in 
+\emph on
+/lib/xirsys.adapter.js
+\emph default
+ will add a 
+\emph on
+src
+\emph default
+ properties to both videos.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-4-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/2-4-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There you have it, a fully functional, client-side WebRTC video chat application.
+ 
+\end_layout
+
+\begin_layout Standard
+Just a couple more things...
+\end_layout
+
+\begin_layout Chapter
+Tying up loose ends
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Full screen videos"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/3-1.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A user can request a HTML5 video element goes full screen with the context
+ menu, but that's not particularly discoverable.
+ We'll include a couple of buttons that do the same.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/3-1-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At the moment requesting full screen by Javascript currently requires a
+ shim, so lets add that, and call it when the buttons are clicked.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/3-1-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/3-1-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Server errors"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/3-2.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We should let the user know when there has been a connection problem by
+ listening for the 
+\emph on
+signalling.error
+\emph default
+ event.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/3-2-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset href
+LatexCommand href
+name "Logging out"
+target "https://github.com/xirdev/xsdk/blob/master/webrtc_walkthrough/3-3.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are two ways of doing this.
+ In the context of this particular application it might be simpler to reload
+ the page with Javascript.
+ But as there are circumstances where you wouldn't want an application to
+ lose its state because of a log out we'll do the slightly more involved
+ approach this time.
+ 
+\end_layout
+
+\begin_layout Standard
+So now when a user clicks on the 
+\emph on
+log-out
+\emph default
+ button it removes the list of peers, hangs up on any existing calls, detaches
+ the user's media streams and closes the connection with the signalling
+ server.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/3-3-1.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/3-3-2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/3-3-3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Next Steps
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This walkthrough has only covered a handful of the possibilities of the
+ XSDK.
+ Please peruse through scripts in the 
+\emph on
+lib
+\emph default
+ directory to get a greater understanding of it, and perhaps also see the
+ 
+\emph on
+/examples/peerjs.html
+\emph default
+ demonstration of how to integrate Xirsys and the XSDK with other services.
+\end_layout
+
+\end_body
+\end_document
