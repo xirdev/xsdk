@@ -5,11 +5,11 @@
 var xirsysConnect = {
 	secureTokenRetrieval : false,
 	data : {
-		domain : 'richie.com',
+		domain : '< www.yourdomain.com >',
 		application : 'default',
 		room : 'default',
-		ident : 'async',
-		secret : 'secret',
+		ident : '< Your username (not your email) >',
+		secret : '< Your secret API token >',
 		secure : 1
 	}
 };
