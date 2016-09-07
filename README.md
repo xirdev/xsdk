@@ -10,6 +10,9 @@ To get started we recommend reading the WebRTC Walkthrough documentation.
 Changes
 -------
 
+##### 07/09/2016
+Update SimpleWebRTC demo to use XirSys signalling.
+
 ##### 22/12/2015
 All demos have been updated over the last six months. A walkthrough guide has been added.
 
@@ -34,4 +37,4 @@ Implement handshake for pub/sub (one-to-many).  Pub/sub is still in development 
 SimpleWebRTC
 ------------
 
-The SimpleWebRTC demo is a great example of using the XirSys platform. The signalling for the SimpleWebRTC demo is based off of the demo server supplied by &Yet for use with SimpleWebRTC. However, this signalling is neither extensive nor official. The signalling detailed in the documentation and demonstrated in the signal.html demo is the preferred protocol for WebRTC signalling.
+The SimpleWebRTC demo is a great example of using the XirSys platform. The signalling for the SimpleWebRTC demo is based off of the demo server supplied by &Yet for use with SimpleWebRTC. The version of SimpleWebRTC supplied in the thirdparty directory is the standard and latest distribution of SimpleWebRTC. This is augmented by the files in the lib directory which update SimpleWebRTC to be compatible with both XirSys signalling and XirSys TURN servers.
