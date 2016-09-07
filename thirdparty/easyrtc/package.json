@@ -1,0 +1,45 @@
+{
+  "name"        : "easyrtc",
+  "version"     : "1.0.15",
+  "homepage"    : "http://www.easyrtc.com/",
+  "author"      : "Priologic Software Inc. <info@priologic.com> (http://priologic.com/)",
+  "description" : "EasyRTC enables quick development of webRTC",
+  "contributors": [
+    "Doug Pelton <doug@priologic.com>",
+    "Rod Apeldoorn <rod.apeldoorn@priologic.com>",
+    "Eric Davies <eric.davies@priologic.com>"
+  ],
+
+  "keywords": [
+    "webRTC",
+    "easy",
+    "EasyRTC",
+    "RTC",
+    "server"
+  ],
+
+  "repository": {
+    "type"      : "git",
+    "url"       : "https://github.com/priologic/easyrtc.git"
+  },
+
+  "bugs": {
+    "url"       : "https://github.com/priologic/easyrtc/issues"
+  },
+
+  "main"        : "index",
+
+  "dependencies" : {
+    "async"     : "0.2.x",
+    "colors"    : "*",
+    "underscore": "1.5.x"
+  },
+
+  "analyze"     : false,
+
+  "license"     : "BSD2",
+
+  "engines": {
+    "node"      : ">=0.8"
+  }
+}
