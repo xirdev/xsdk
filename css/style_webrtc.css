@@ -41,7 +41,7 @@ body {
 		color: #FFF;
 	}
 	/*Hangup Button*/
-	#remote-username img {
+	#remote-username #hang-up {
 		background-color: #B24556;
 	}
 
@@ -223,6 +223,7 @@ body {
 .end-call-wt {
 	background-image: url('../images/end-call-wt.png');
 	background-repeat: no-repeat;
+    background-position: 33% 50%;
 }
 
 .remote-fs-selected {
@@ -238,16 +239,19 @@ body {
 .expand {
 	background-image: url('../images/expand.png');
 	background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .chat-on {
 	background-image: url('../images/chat-on.png');
 	background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .brand-logo {
 	background-image: url('../images/brand-logo.png');
 	background-repeat: no-repeat;
+    background-position: top right;
 }
 
 section.vertical-bar {
@@ -304,6 +308,8 @@ section.minor-box.box-standby {
 	position: absolute;
 	right: 18px;
 	top: 8px;
+	width: 200px;
+	height: 100px;
 }
 
 #xsdk-video-call {
@@ -357,13 +363,13 @@ section.minor-box.box-standby {
 	bottom: 10px;
 	display: -webkit-flex;
 	display: flex;
-	/*color: #FFF;*/
 	/*Hidden initially - Shown when in vid chat*/
 	visibility: hidden;
 }
 
-	#remote-username img {
+	#remote-username #hang-up {
 		height: 35px;
+		width: 35px;
 		/*background-color: #B24556;*/
 		margin-right: 10px;
 		padding: 5px;
@@ -409,18 +415,18 @@ section.minor-box.box-standby {
 }
 
 .menu-icon-btns#log-out {
-	background-image: url('../images/sign-out.png');
+	/*background-image: url('../images/sign-out.png');*/
 	margin-left: 20px;
 }
 
 .menu-icon-btns#call-peer {
-	background-image: url('../images/start-call.png');
+	/*background-image: url('../images/start-call.png');*/
 	margin-left: 10px;
 	margin-right: 10px;
 }
 
 .menu-icon-btns#hang-up {
-	background-image: url('../images/end-call.png');
+	/*background-image: url('../images/end-call.png');*/
 	background-position-y: -5px;
 }
 
@@ -492,7 +498,7 @@ section.minor-box.box-standby {
 
 
 .peer-icon {
-	margin-right: 15px;
+	margin-right: 10px;
 	pointer-events: none;
 }
 

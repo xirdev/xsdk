@@ -3,6 +3,7 @@
 	<title>Xirsys XSDK: WebRTC Example</title>
 
 	<link rel="stylesheet" type="text/css" href="../css/style_webrtc.css"></link>
+	<!-- <link rel="stylesheet" type="text/css" href="../css/video-call.css"></link> -->
 
 	<script src="xirsys_connect.js"></script>
 	<script src="../lib/xirsys.core.js"></script>
@@ -81,7 +82,11 @@
 
 				loginEl.parentNode.style.visibility = 'hidden';
 				logOutEl.style.visibility = 'visible';
-				logOutEl.style.backgroundImage = 'url(../images/sign-out-grn.png)';
+
+				if(logOutEl.classList.contains('sign-out')) {
+					logOutEl.classList.remove('sign-out');
+					logOutEl.classList.add('sign-out-grn');
+				}
 
 				var connectionProperties = xirsysConnect.data;
 					connectionProperties.username = username;
@@ -99,8 +104,11 @@
 				}
 				usernameLabelEl.appendChild(document.createTextNode('Username'));
 				login.parentNode.style.visibility = 'visible';
-				//logOutEl.style.visibility = 'hidden';
-				logOutEl.style.backgroundImage = 'url(../images/sign-out.png)';
+
+				if(logOutEl.classList.contains('sign-out-grn')) {
+					logOutEl.classList.remove('sign-out-grn');
+					logOutEl.classList.add('sign-out');
+				}
 				removeAllPeers();
 				if( remoteChatRequest === undefined ) {
 		            callEnd();
@@ -194,11 +202,10 @@
 				else {
 					if (!document.getElementById('peer-' + $peerName)) {
 						//create icon
-						var imgEl = document.createElement('img');
-							imgEl.setAttribute('src', '../images/user-icon-sm.png');
-							imgEl.setAttribute('class', 'peer-icon');
+						var imgEl = document.createElement('div');
+							imgEl.setAttribute('class', 'peer-icon user-icon-img');
 						//create label
-						var txtEl = document.createElement('span');//document.createElement('input');
+						var txtEl = document.createElement('span');
 							txtEl.setAttribute('class','sr-only');
 							txtEl.setAttribute('class', 'peer-label');
 							txtEl.textContent = stripLeaf($peerName);
@@ -218,27 +225,19 @@
 			var removePeer = function ($peerName) {
 				var nodeEl = document.getElementById('peer-' + $peerName);
 				var curSel = selectedPeer(true);
-				if( !!curSel ){
-					if(curSel.id == nodeEl.id) {
-						setSelectedPeer(curSel, false);
-					}
+				if( !!curSel && curSel.id == nodeEl.id) {
+					setSelectedPeer(curSel, false);
 				}
-				console.log('removing: ',nodeEl);
-				peersEl.removeChild(nodeEl);
+				if( !!nodeEl ) peersEl.removeChild(nodeEl);
 			};
 			
 			// For resetting the peers list, leaving the __all__ selector only.
 			var removeAllPeers = function () {
-				var selectors = peersEl.getElementsByTagName('div'),
-					peerSelectors = [];
-				var i;
-				for (i = 0; i < selectors.length; i++) {
-				   	if (selectors[i].className.indexOf('peer') !== -1) {
-						peerSelectors.push(selectors[i]);
-					}
-				}
-				for (i = 0; i < peerSelectors.length; i++) {
-					peersEl.removeChild(peerSelectors[i]);
+				var selectors = peersEl.getElementsByTagName('div');
+				var i, len = selectors.length;
+				for(i=0; i<len; i++){
+					var peerSel = selectors[i];
+					if( !!peerSel && peerSel.classList.contains('peer') ) peersEl.removeChild(peerSel);
 				}
 			};
 			
@@ -267,11 +266,17 @@
 					sel.classList.remove('selected');
 					//if the peer is the same as the selected one, do not reselect.
 					if(sel.id === $peer.id) {
-						callPeerEl.style.backgroundImage = 'url(../images/start-call.png)';
+						if(callPeerEl.classList.contains('start-call-grn')) {
+							callPeerEl.classList.remove('start-call-grn');
+							callPeerEl.classList.add('start-call');
+						}
 						return;
 					}
 				}
-				callPeerEl.style.backgroundImage = 'url(../images/start-call-grn.png)';
+				if(callPeerEl.classList.contains('start-call')) {
+					callPeerEl.classList.remove('start-call');
+					callPeerEl.classList.add('start-call-grn');
+				}
 				$peer.classList.add('selected');
 			};
 
@@ -396,13 +401,7 @@
 			// Else calls are automatically answered (see xirsys.p2p.js).
 			var callIncoming = function ($peer, $data) {
 				//if local user in session, cannot chat with requestor, send notification.
-				console.log('callIncoming ',$peer,'  -  insession: '+(!!remoteChatRequest.peer) );
-	            // if( !!remoteChatRequest.peer ){
-	            // 	console.log('refuse call ');
-	            // 	sendMsg({internal:true,type:'msg-alert',message:username+' is currently in a session. Please try later.',from:'INFO'}, $peer);
-	            // 	return false;
-	            // }
-	            console.log('callIncoming - auto answer: ',automaticAnswer);
+				//console.log('callIncoming ',$peer,'  -  insession: '+(!!remoteChatRequest.peer) );
 				if (automaticAnswer === false) {
 					if (confirm('Take a call from ' + $peer + '?')) {
 						p.answer($peer, $data);
@@ -424,7 +423,6 @@
 			// Full-screens any HTML5 video on the page.
 			var fullScreenVideo = function ($video) {
 				// are we full-screen?
-				//if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement ) {
 				if(isFullScreen()){
 					if (document.exitFullscreen) {
 						document.exitFullscreen();
@@ -452,17 +450,21 @@
 			};
 
 			var FShandler = function(){
-				//console.log('FShandler ',document.fullscreenElement);
 				//if screen is in fullscreen video
-				//if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
 				if(isFullScreen()){
-					remoteFullScreenEl.style.backgroundColor = '#81b75c';
+					if(remoteFullScreenEl.classList.contains('remote-fs-unselected')) {
+						remoteFullScreenEl.classList.remove('remote-fs-unselected');
+						remoteFullScreenEl.classList.add('remote-fs-selected');
+					}
 					if(showColumnBtn.style.display != 'none'){
 						showColumnBtn.style.visibility = 'hidden';
 					}
 				} //if screen is not in fullscreen
 				else {
-					remoteFullScreenEl.style.backgroundColor = '#797979';
+					if(remoteFullScreenEl.classList.contains('remote-fs-selected')) {
+						remoteFullScreenEl.classList.remove('remote-fs-selected');
+						remoteFullScreenEl.classList.add('remote-fs-unselected');
+					}
 					if(showColumnBtn.style.display != 'none'){
 						showColumnBtn.style.visibility = 'visible';
 					}
@@ -483,13 +485,19 @@
 				remotePeerName.innerHTML = $peerName;
 				remoteChatRequest = {peer:$peerName};
 
-				hangUpEl.style.backgroundImage = 'url(../images/end-call-grn.png)';
+				if(hangUpEl.classList.contains('end-call')) {
+					hangUpEl.classList.remove('end-call');
+					hangUpEl.classList.add('end-call-grn');
+				}
 
 				//udpate indicator in userlist item
 				var sel = document.getElementById('peer-'+remoteChatRequest.peer);
 				if(!!sel) {
 					var pIcon = sel.getElementsByClassName('peer-icon')[0];
-					pIcon.src = '../images/user-icon-sm-grn.png';
+					if(pIcon.classList.contains('user-icon-img')) {
+						pIcon.classList.remove('user-icon-img');
+						pIcon.classList.add('user-icon-img-grn');
+					}
 				}
 				//hide chat by default
 				showChat(false);
@@ -510,7 +518,11 @@
 		    {
 		        console.log('*** callEnd, peer:  ',remoteChatRequest.peer);
 		        remotePeerName.innerHTML = 'No Caller';
-				hangUpEl.style.backgroundImage = 'url(../images/end-call.png)';
+				
+				if(hangUpEl.classList.contains('end-call-grn')) {
+					hangUpEl.classList.remove('end-call-grn');
+					hangUpEl.classList.add('end-call');
+				}
 
 		        p.hangUp();
 
@@ -519,7 +531,10 @@
 				var sel = document.getElementById('peer-'+remoteChatRequest.peer);
 				if(!!sel) {
 					var pIcon = sel.getElementsByClassName('peer-icon')[0];
-					pIcon.src = '../images/user-icon-sm.png';
+					if(pIcon.classList.contains('user-icon-img-grn')) {
+						pIcon.classList.remove('user-icon-img-grn');
+						pIcon.classList.add('user-icon-img');
+					}
 				}
 				//show chat if hidden
 				showChat(true);
@@ -619,13 +634,13 @@
 			<div id="userInfo">
 				<h1 class="title-text" id="username-label">Username</h1>
 				<div class="box">
-					<div id="log-out" class="menu-icon-btns">
+					<div id="log-out" class="menu-icon-btns sign-out">
 						<text>LOGOUT</text>
 					</div>
-					<div id="call-peer" class="menu-icon-btns">
+					<div id="call-peer" class="menu-icon-btns start-call">
 						<text>CALL</text>
 					</div>
-					<div id="hang-up" class="menu-icon-btns">
+					<div id="hang-up" class="menu-icon-btns end-call">
 						<text>Hang Up</text>
 					</div>
 				</div>
@@ -650,20 +665,16 @@
 				</section>
 				<!-- Remote Username Label and Hangup Button -->
 				<div id="remote-username">
-					<img id="hang-up" class="rounded-btn" src="../images/end-call-wt.png"/>
+					<div id="hang-up" class="rounded-btn end-call-wt"></div>
 					<h1 class="title-text">No Caller</h1>
 				</div>
 				<!-- Expand and Chat buttons for P2P chat -->
 				<div id="video-menu">
-					<div id="remote-full-screen" class="rounded-btn">
-						<img src="../images/expand.png">
-					</div>
-					<div id="chat-btn" class="rounded-btn">
-						<img src="../images/chat-on.png">
-					</div>
+					<div id="remote-full-screen" class="rounded-btn expand remote-fs-unselected"></div>
+					<div id="chat-btn" class="rounded-btn chat-on"></div>
 				</div>
 				<!-- Company Logo -->
-				<img id="co-logo" src="../images/brand-logo.png">
+				<div id="co-logo" class="brand-logo"></div>
 				<div id="showColumn" class="hide-btn"></div>
 			</section>
 
